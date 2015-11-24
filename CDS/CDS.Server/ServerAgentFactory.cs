@@ -12,7 +12,7 @@ namespace CDS.Server
     {
         public override CDSAgent Open(bool LocalSideStart, int ChannelID, CDSMessageHandler Handler)
         {
-            //do
+            return null;
         }
     }
 }
