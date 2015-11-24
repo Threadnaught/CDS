@@ -6,7 +6,7 @@ using System.Data;
 
 using CDS.Common;
 
-namespace CDS.Data
+namespace CDS.Server
 {
 	public static class SqliteWrapper
 	{

@@ -6,10 +6,8 @@ using System.Data;
 
 using CDS.Common;
 
-namespace CDS.Data
+namespace CDS.Server
 {
-	
-
 	public class LocalNode
 	{
 		int Id;
