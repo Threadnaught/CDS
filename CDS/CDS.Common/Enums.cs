@@ -27,4 +27,11 @@
         Message = 2,
         ChannelOperationFailed = 3,
     }
+
+    public enum NodeType
+    {
+        Hollow,
+        Data,
+        Stream
+    }
 }
