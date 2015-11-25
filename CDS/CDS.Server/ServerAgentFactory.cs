@@ -10,7 +10,7 @@ namespace CDS.Server
 {
     class ServerAgentFactory : AgentFactory
     {
-        public override CDSAgent Open(bool LocalSideStart, int ChannelID, CDSMessageHandler Handler)
+        public override CDSAgent Open(int ChannelID, CDSMessageHandler Handler)
         {
             return null;
         }

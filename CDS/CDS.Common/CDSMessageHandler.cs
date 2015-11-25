@@ -9,16 +9,15 @@ namespace CDS.Common
 		//PARSING AND TRANSMITTING CDS MESSAGES FROM AND TO AGENTS
 		public Dictionary<int, CDSAgent> Agents = new Dictionary<int, CDSAgent>();
 		public ChannelEncap chan;
-        public AgentFactory agentCreator;
-		public CDSMessageHandler (ChannelEncap channel, AgentFactory f)
+        public Dictionary<bool, AgentFactory> agentFactories;
+		public CDSMessageHandler (ChannelEncap channel)
 		{
 			chan = channel;
 			chan.OnChannelCreate += OnChannelCreate;
 			chan.OnChannelDelete += OnChannelDelete;
 			chan.OnDataReceive += OnDataReceive;
-            agentCreator = f;
 		}
-		public CDSMessageHandler (System.Net.IPAddress Address, AgentFactory f)
+		public CDSMessageHandler (System.Net.IPAddress Address)
 		{
 			System.Net.Sockets.TcpClient c = new System.Net.Sockets.TcpClient ();
 			c.Connect (new System.Net.IPEndPoint (Address, 13245));
@@ -26,12 +25,11 @@ namespace CDS.Common
 			chan.OnChannelCreate += OnChannelCreate;
 			chan.OnChannelDelete += OnChannelDelete;
 			chan.OnDataReceive += OnDataReceive;
-            agentCreator = f;
 		}
 		void OnChannelCreate(int ch)
 		{
 			//add new Remote agent on local side
-			Agents.Add(ch, agentCreator.Open(false, ch, this));
+			Agents.Add(ch, agentFactories[false].Open(ch, this));
 		}
 		void OnChannelDelete(int ch)
 		{
@@ -79,7 +77,7 @@ namespace CDS.Common
 					ID = NewID + 1;
 			}
 			chan.CreateChannel (ID);
-            Agents.Add(ID, agentCreator.Open(false, ID, this));
+            Agents.Add(ID, agentFactories[true].Open(ID, this));
 			return Agents[ID];
 		}
 		public void CloseChannel(CDSAgent a)

@@ -8,6 +8,6 @@
 
     public abstract class AgentFactory
     {
-        public abstract CDSAgent Open(bool LocalSideStart, int ChannelID, CDSMessageHandler Handler);
+        public abstract CDSAgent Open(int ChannelID, CDSMessageHandler Handler);
     }
 }
