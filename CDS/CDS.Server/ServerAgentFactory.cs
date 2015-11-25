@@ -8,11 +8,11 @@ using CDS.Common;
 
 namespace CDS.Server
 {
-    class ServerAgentFactory : AgentFactory
+    public class ServerAgentFactory : AgentFactory
     {
         public override CDSAgent Open(int ChannelID, CDSMessageHandler Handler)
         {
-            return null;
+            return new CDSRemoteAgent() { CDSHandler = Handler, ChannelID = ChannelID };
         }
     }
 }
