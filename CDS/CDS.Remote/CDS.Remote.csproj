@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="RemoteAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RemoteAgentFactory.cs" />
     <Compile Include="RemoteNode.cs" />
   </ItemGroup>
   <ItemGroup>

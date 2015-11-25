@@ -21,10 +21,12 @@ namespace CDS.Common
 		{
 			System.Net.Sockets.TcpClient c = new System.Net.Sockets.TcpClient ();
 			c.Connect (new System.Net.IPEndPoint (Address, 13245));
-			chan = new ChannelEncap (new TcpMessageEncap (c));
+            TcpMessageEncap e = new TcpMessageEncap(c);
+			chan = new ChannelEncap (e);
 			chan.OnChannelCreate += OnChannelCreate;
 			chan.OnChannelDelete += OnChannelDelete;
 			chan.OnDataReceive += OnDataReceive;
+            e.Init();
 		}
 		void OnChannelCreate(int ch)
 		{
