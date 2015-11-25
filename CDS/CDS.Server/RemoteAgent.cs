@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using CDS.Common;
 
-namespace CDS.Server
+namespace CDS.Data
 {
 	public class CDSRemoteAgent : CDSAgent
 	{

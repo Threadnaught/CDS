@@ -75,9 +75,9 @@
       <Project>{16e7c81f-d9d8-4dd4-9445-37b2c5f540ff}</Project>
       <Name>CDS.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CDS.Server\CDS.Server.csproj">
+    <ProjectReference Include="..\CDS.Server\CDS.Data.csproj">
       <Project>{8c9a0a6b-fe2d-4a77-8155-f25c534dcee1}</Project>
-      <Name>CDS.Server</Name>
+      <Name>CDS.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using CDS.Common;
 
-namespace CDS.Server
+namespace CDS.Data
 {
     public class ServerAgentFactory : AgentFactory
     {

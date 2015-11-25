@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CDS.Common", "CDS.Common\CDS.Common.csproj", "{16E7C81F-D9D8-4DD4-9445-37B2C5F540FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CDS.Server", "CDS.Server\CDS.Server.csproj", "{8C9A0A6B-FE2D-4A77-8155-F25C534DCEE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CDS.Data", "CDS.Server\CDS.Data.csproj", "{8C9A0A6B-FE2D-4A77-8155-F25C534DCEE1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerTest", "ServerTest\ServerTest.csproj", "{5DA8DDDC-D0D0-4B94-B6AD-BE4FDD46F811}"
 EndProject
