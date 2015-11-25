@@ -22,9 +22,11 @@ namespace CDS.Common
 		public TcpMessageEncap (TcpClient client)
 		{
 			c = client;
-			new Thread (ReceiveMessageThread).Start ();
 		}
-
+        public void Init() 
+        {
+            new Thread(ReceiveMessageThread).Start();
+        }
 		public override void SendMessage(byte[] Msg)
 		{
 			c.GetStream ().Write (BitConverter.GetBytes((UInt32)Msg.Length), 0, 4);

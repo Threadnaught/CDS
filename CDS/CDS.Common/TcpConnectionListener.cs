@@ -45,6 +45,7 @@ namespace CDS.Common
                     CDSMessageHandler h = new CDSMessageHandler(c);
                     h.agentFactories = AgentCreators;
 					AcceptedConnections.Add (h);
+                    m.Init();
 				}
 				for (int i = 0; i < AcceptedConnections.Count; i++) 
 				{
