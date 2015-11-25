@@ -17,9 +17,6 @@
         Failure = 1,
         SubscribedUpdate = 2
     }
-
-
-
     public enum ChannelOp : byte
     {
         Create = 0,
@@ -27,7 +24,6 @@
         Message = 2,
         ChannelOperationFailed = 3,
     }
-
     public enum NodeType
     {
         Hollow,
