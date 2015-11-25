@@ -12,7 +12,7 @@ namespace CDS.Data
     {
         public override CDSAgent Open(int ChannelID, CDSMessageHandler Handler)
         {
-            return new CDSRemoteAgent() { CDSHandler = Handler, ChannelID = ChannelID };
+            return new CDSLocalAgent() { CDSHandler = Handler, ChannelID = ChannelID };
         }
     }
 }

@@ -8,10 +8,10 @@ namespace CDS.Remote
 {
 	public class RemoteNode
 	{
-		public CDSLocalAgent agent;
+		public CDSRemoteAgent agent;
 		public RemoteNode parent;
 		public string FullName;
-		public RemoteNode(CDSLocalAgent Agent, string Name)
+		public RemoteNode(CDSRemoteAgent Agent, string Name)
 		{
 			FullName = Name;
 			agent = Agent;

@@ -61,7 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RemoteAgent.cs" />
+    <Compile Include="LocalAgent.cs" />
     <Compile Include="GenericSqlite.cs" />
     <Compile Include="LocalNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

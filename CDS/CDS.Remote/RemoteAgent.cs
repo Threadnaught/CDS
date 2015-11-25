@@ -6,12 +6,7 @@ using CDS.Common;
 
 namespace CDS.Remote
 {
-	public abstract class CDSAgent
-	{
-		public CDSMessageHandler CDSHandler;
-		public abstract void OnReceiveCDSMessage (byte Op, string TgtNode, int OpID, byte[] Body);
-	}
-	public class CDSLocalAgent : CDSAgent
+	public class CDSRemoteAgent : CDSAgent
 	{
 		List<SentOp> SentOps = new List<SentOp>();
 		//the side which initiated the channel (sends operations to remote agent)

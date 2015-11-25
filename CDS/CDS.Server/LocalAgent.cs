@@ -5,7 +5,7 @@ using CDS.Common;
 
 namespace CDS.Data
 {
-	public class CDSRemoteAgent : CDSAgent
+	public class CDSLocalAgent : CDSAgent
 	{
 		//the side which received the channel (sends responses back to local agent)
 		//parsing commands, sending responses
