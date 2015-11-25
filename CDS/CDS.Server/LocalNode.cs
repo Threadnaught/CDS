@@ -86,7 +86,6 @@ namespace CDS.Server
 			SqliteWrapper.ExecNonQuery ("DELETE FROM Nodes WHERE Id=" + Id.ToString ());
 			Id = -1;
 		}
-
 		public byte[] Read()
 		{
 			switch (Type) 
@@ -124,7 +123,6 @@ namespace CDS.Server
 			c.Parameters.Add ("@ParentId", DbType.Int32).Value = Id;
 			SqliteWrapper.ExecNonQuery (c);
 		}
-
 		public static LocalNode Root
 		{
 			get
@@ -183,7 +181,6 @@ namespace CDS.Server
 			SqliteWrapper.ExecNonQuery (c);
 			return SqliteWrapper.LastInsertRowId;
 		}
-
 		public override bool Equals (object obj)
 		{
 			if (obj.GetType () != GetType ())

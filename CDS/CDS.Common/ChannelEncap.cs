@@ -23,21 +23,24 @@ namespace CDS.Common
 
 		void MessageFromProvider(byte[] Message)
 		{
-			byte[] Body = new byte[Message.Length - 5];
-			Array.Copy (Message, 5, Body, 0, Body.Length);
-			int Channel = (int)BitConverter.ToUInt32 (Message, 0);
-			switch ((ChannelOp)Message [4]) 
-			{
-			case ChannelOp.Create:
-				OnChannelCreate (Channel);
-				break;
-			case ChannelOp.Delete:
-				OnChannelDelete (Channel);
-				break;
-			case ChannelOp.Message:
-				OnDataReceive (Channel, Body);
-				break;
-			}
+            if (Message.Length != 0)
+            {
+                byte[] Body = new byte[Message.Length - 5];
+                Array.Copy(Message, 5, Body, 0, Body.Length);
+                int Channel = (int)BitConverter.ToUInt32(Message, 0);
+                switch ((ChannelOp)Message[4])
+                {
+                    case ChannelOp.Create:
+                        OnChannelCreate(Channel);
+                        break;
+                    case ChannelOp.Delete:
+                        OnChannelDelete(Channel);
+                        break;
+                    case ChannelOp.Message:
+                        OnDataReceive(Channel, Body);
+                        break;
+                }
+            }
 		}
 		public void SendMessage(byte[] Message, int Channel)
 		{
