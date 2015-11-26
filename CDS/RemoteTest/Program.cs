@@ -17,7 +17,7 @@ namespace RemoteTest
             h.agentFactories = new Dictionary<bool, AgentFactory>();
             h.agentFactories.Add(true, new RemoteAgentFactory());
             CDSRemoteAgent a = (CDSRemoteAgent)h.OpenNewChannel();
-            RemoteNode n = a.Root.AddChild("Test", NodeType.Data);
+            RemoteNode n = (RemoteNode)a.Root.AddChild(NodeType.Data, "Test");
             while (true)
             {
                 n.Write(new byte[10000000]);

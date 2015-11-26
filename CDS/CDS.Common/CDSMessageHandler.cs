@@ -40,7 +40,6 @@ namespace CDS.Common
 		void OnDataReceive(int ch, byte[] Data)
 		{
 			//parse CDS message
-
 			byte Op = Data[0];
 			string TgtNode = "";
 			int i;
@@ -60,7 +59,6 @@ namespace CDS.Common
 		public void SendMessage(int ch, byte Op, string TgtNode, int OpID, byte[] Body)
 		{
 			//construct CDS message
-
 			byte[] Message = new byte[Body.Length + TgtNode.Length + 6];
 			Message [0] = Op;
 			System.Text.Encoding.ASCII.GetBytes (TgtNode).CopyTo (Message, 1);
