@@ -8,7 +8,7 @@ using CDS.Common;
 
 namespace CDS.Data
 {
-	public class LocalNode
+	public class LocalNode : Node
 	{
 		int Id;
 		int ParentId
@@ -24,7 +24,7 @@ namespace CDS.Data
 				SqliteWrapper.ExecNonQuery (c);
 			}
 		}
-		public string Name
+		public new string Name
 		{
 			get
 			{
@@ -37,14 +37,28 @@ namespace CDS.Data
 				SqliteWrapper.ExecNonQuery (c);
 			}
 		}
-		public NodeType Type
+        public new string FullName 
+        {
+            get 
+            {
+                if (Parent != null)
+                {
+                    return Parent.FullName + "." + Name;
+                }
+                else 
+                {
+                    return Name;
+                }
+            }
+        }
+        public new NodeType Type
 		{
 			get
 			{
 				return (NodeType)SqliteWrapper.ExecScalar ("SELECT Type FROM Nodes WHERE Id = " + Id.ToString());
 			}
 		}
-		public LocalNode Parent
+		public new LocalNode Parent
 		{
 			get
 			{
@@ -55,20 +69,7 @@ namespace CDS.Data
 				ParentId = value.Id;
 			}
 		}
-		public byte[] Data
-		{
-			get
-			{
-				return (byte[])SqliteWrapper.ExecScalar ("SELECT Contents FROM Nodes WHERE Id = " + Id.ToString());
-			}	
-			set
-			{
-				SQLiteCommand c = new SQLiteCommand ("UPDATE Nodes SET Contents=@Contents WHERE Id =" + Id.ToString ());
-				c.Parameters.Add ("@Contents", DbType.Binary).Value = value;
-				SqliteWrapper.ExecNonQuery (c);
-			}
-		}
-		public List<LocalNode> Children
+		public new List<LocalNode> Children
 		{
 			get
 			{
@@ -81,19 +82,20 @@ namespace CDS.Data
 				return Ret;
 			}
 		}
-		public void Delete()
+
+		public override void Delete()
 		{
 			SqliteWrapper.ExecNonQuery ("DELETE FROM Nodes WHERE Id=" + Id.ToString ());
 			Id = -1;
 		}
-		public byte[] Read()
+		public override byte[] Read()
 		{
 			switch (Type) 
 			{
 			case NodeType.Hollow:
 				return new byte[0];
-			case NodeType.Data:
-				return Data;
+            case NodeType.Data:
+                return (byte[])SqliteWrapper.ExecScalar("SELECT Contents FROM Nodes WHERE Id = " + Id.ToString());
 			case NodeType.Stream:
 				//shitshitshit
 				throw new System.NotImplementedException("go directly to prison, do not pass go, do not collect £200");
@@ -101,28 +103,32 @@ namespace CDS.Data
 				throw new System.NotImplementedException("you have won second prize in a beauty contest. collect £20");
 			}
 		}
-		public void Write(byte[] data)
+		public override void Write(byte[] data)
 		{
 			switch (Type) 
 			{
 			case NodeType.Hollow:
 				break;
-			case NodeType.Data:
-				Data = data;
+            case NodeType.Data:
+                SQLiteCommand c = new SQLiteCommand("UPDATE Nodes SET Contents=@Contents WHERE Id =" + Id.ToString());
+                c.Parameters.Add("@Contents", DbType.Binary).Value = data;
+                SqliteWrapper.ExecNonQuery(c);
 				break;
 			case NodeType.Stream:
 				//shitshitshit shitshitshit
 				throw new System.NotImplementedException("building tax!");
 			}
 		}
-		public void AddChild(NodeType type, string Name)
+		public override Node AddChild(NodeType type, string Name)
 		{
 			SQLiteCommand c = new SQLiteCommand("INSERT INTO Nodes (Name, Type, ParentId) VALUES (@Name, @Type, @ParentId)");
 			c.Parameters.Add ("@Name", DbType.String).Value = ValidateName (Name);
 			c.Parameters.Add ("@Type", DbType.Int32).Value = type;
 			c.Parameters.Add ("@ParentId", DbType.Int32).Value = Id;
 			SqliteWrapper.ExecNonQuery (c);
+            return new LocalNode() { Id = SqliteWrapper.LastInsertRowId };
 		}
+
 		public static LocalNode Root
 		{
 			get
@@ -132,7 +138,6 @@ namespace CDS.Data
 				};
 			}
 		}
-
 		public static LocalNode ByName(string Name)
 		{
 			SQLiteCommand c = new SQLiteCommand ("SELECT Id FROM Nodes WHERE Name = @Name");
@@ -157,14 +162,6 @@ namespace CDS.Data
 			}
 			return n;
 		}
-		public static bool ValidName(string s)
-		{
-			return System.Text.RegularExpressions.Regex.IsMatch (s, "^[a-zA-Z0-9\\-_]*$");
-		}
-		public static string ValidateName(string s)
-		{
-			return s.ToLower ();
-		}
 		public static LocalNode Create(LocalNode Parent, string Name, NodeType Type, byte[] Contents)
 		{
 			return new LocalNode (){ Id = Create(Parent.Id, Name, Type, Contents)  };
@@ -181,28 +178,5 @@ namespace CDS.Data
 			SqliteWrapper.ExecNonQuery (c);
 			return SqliteWrapper.LastInsertRowId;
 		}
-		public override bool Equals (object obj)
-		{
-			if (obj.GetType () != GetType ())
-				return false;
-			return Id == ((LocalNode)obj).Id;
-		}
-		public static bool operator  == (LocalNode a, LocalNode b)
-		{
-			return a.Equals (b);
-		}
-		public static bool operator  != (LocalNode a, LocalNode b)
-		{
-			return !a.Equals (b);
-		}
-		public override int GetHashCode ()
-		{
-			return Id;
-		}
-		public override string ToString ()
-		{
-			return Name + "(" + Id.ToString() + ")";
-		}
 	}
 }
-
