@@ -24,10 +24,15 @@
         Message = 2,
         ChannelOperationFailed = 3,
     }
-    public enum NodeType
+    public enum NodeType : byte
     {
-        Hollow,
-        Data,
-        Stream
+        Hollow = 0,
+        Data = 1,
+        Stream = 2,
+    }
+    public enum DataType : byte
+    {
+        Data = 0,
+        Link = 1,
     }
 }
