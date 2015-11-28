@@ -41,7 +41,7 @@ namespace CDS.Data
         {
             get 
             {
-                if (Parent != null)
+                if (ParentId != -1)
                 {
                     return Parent.FullName + "." + Name;
                 }
@@ -89,6 +89,8 @@ namespace CDS.Data
 		}
 		public override CDSData Read()
 		{
+            string Test = FullName;
+
 			switch (Type) 
 			{
 			case NodeType.Hollow:
@@ -128,7 +130,6 @@ namespace CDS.Data
             return new LocalNode() { Id = SqliteWrapper.LastInsertRowId };
 		}
 
-
 		public static LocalNode Root
 		{
 			get
@@ -150,6 +151,7 @@ namespace CDS.Data
 			LocalNode n = Root; 
 			foreach (string s in sections) 
 			{
+                if (ValidateName(s) == "root" && n == Root) continue;
 				if(s != "")
 				foreach(LocalNode c in n.Children)
 				{
