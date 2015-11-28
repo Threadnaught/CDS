@@ -20,8 +20,8 @@ namespace RemoteTest
             RemoteNode n = (RemoteNode)a.Root.AddChild(NodeType.Data, "Test");
             while (true)
             {
-                n.Write(new byte[10000000]);
-                Console.WriteLine(n.Read().Length);
+                n.Write(new CDSData(DataType.Data, new byte[10000]));
+                Console.WriteLine(n.Read().Data.Length);
             }
         }
     }

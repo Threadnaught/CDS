@@ -69,14 +69,14 @@ namespace CDS.Remote
         {
             agent.SendRequest(CDSOperations.delete, FullName, new byte[] { });
         }
-		public override byte[] Read()
+		public override CDSData Read()
 		{
 			SentOp o = agent.SendRequest(CDSOperations.read, FullName, new byte[]{});
-			return o.Reply;
+			return CDSData.FromRaw(o.Reply);
 		}
-		public override void Write(byte[] Data)
+		public override void Write(CDSData Data)
 		{
-			agent.SendRequest (CDSOperations.write, FullName, Data);
+			agent.SendRequest (CDSOperations.write, FullName, Data.ToRaw());
 		}
         public override Node AddChild(NodeType type, string Name)
         {

@@ -14,8 +14,8 @@ namespace CDS.Common
         public Node Parent;
         public List<Node> Children;
         public abstract void Delete();
-        public abstract byte[] Read();
-        public abstract void Write(byte[] Data);
+        public abstract CDSData Read();
+        public abstract void Write(CDSData Data);
         public abstract Node AddChild(NodeType type, string Name);
 
         public static bool ValidName(string s)

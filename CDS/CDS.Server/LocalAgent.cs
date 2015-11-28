@@ -20,11 +20,11 @@ namespace CDS.Data
 				{
 				case CDSOperations.read:
 					tgt = LocalNode.Resolve (TgtNode);
-					CDSHandler.SendMessage (ChannelID, (byte)CDSResponses.Success, TgtNode, OpID, tgt.Read ());
+					CDSHandler.SendMessage (ChannelID, (byte)CDSResponses.Success, TgtNode, OpID, tgt.Read ().ToRaw());
 					break;
 				case CDSOperations.write:
 					tgt = LocalNode.Resolve (TgtNode);
-					tgt.Write (Body);
+					tgt.Write (CDSData.FromRaw(Body));
 					CDSHandler.SendMessage(ChannelID, (byte)CDSResponses.Success, TgtNode, OpID, new byte[0]);
 					break;
 				case CDSOperations.create:
