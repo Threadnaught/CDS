@@ -89,9 +89,7 @@ namespace CDS.Data
 		}
 		public override CDSData Read()
 		{
-            string Test = FullName;
-
-			switch (Type) 
+            switch (Type) 
 			{
 			case NodeType.Hollow:
 				return null;
