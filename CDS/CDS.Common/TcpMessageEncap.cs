@@ -29,8 +29,16 @@ namespace CDS.Common
         }
 		public override void SendMessage(byte[] Msg)
 		{
-			c.GetStream ().Write (BitConverter.GetBytes((UInt32)Msg.Length), 0, 4);
-			c.GetStream ().Write (Msg, 0, Msg.Length);
+            try
+            {
+                c.GetStream().Write(BitConverter.GetBytes((UInt32)Msg.Length), 0, 4);
+                c.GetStream().Write(Msg, 0, Msg.Length);
+            }
+            catch 
+            {
+                Alive = false;
+                c.Close();
+            }
 		}
 		void ReceiveMessageThread()
 		{
@@ -41,12 +49,24 @@ namespace CDS.Common
 					byte[] LengthBuffer = new byte[4];
 					c.GetStream ().Read (LengthBuffer, 0, 4);
 
-					byte[] MessageBuffer = new byte[BitConverter.ToUInt32(LengthBuffer, 0)];
-					c.GetStream ().Read (MessageBuffer, 0, MessageBuffer.Length);
+                    DateTime Start = DateTime.Now;
 
-					OnReceiveMessage (MessageBuffer);
+                    while (c.Available < BitConverter.ToUInt32(LengthBuffer, 0) && (DateTime.Now - Start).TotalSeconds < 5) 
+                    {
+                        Thread.Sleep(50);
+                    }
+                    if ((DateTime.Now - Start).TotalSeconds < 5)
+                    {
+                        byte[] MessageBuffer = new byte[BitConverter.ToUInt32(LengthBuffer, 0)];
+                        c.GetStream().Read(MessageBuffer, 0, MessageBuffer.Length);
 
-					//TODO: add timeout
+                        OnReceiveMessage(MessageBuffer);
+                    }
+                    else 
+                    {
+                        Alive = false;
+                        c.Close();
+                    }
 				} 
 				else 
 				{
