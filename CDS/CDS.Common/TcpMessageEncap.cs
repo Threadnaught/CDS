@@ -9,6 +9,7 @@ namespace CDS.Common
 	{
 		//ABSTRACT MESSAGE PROVIDER
 		public ReceiveMessage OnReceiveMessage;
+        public Close OnClose;
 		public abstract void SendMessage (byte[] Msg);
 		public bool Alive = true;
 	}
@@ -38,6 +39,7 @@ namespace CDS.Common
             {
                 Alive = false;
                 c.Close();
+                OnClose();
             }
 		}
 		void ReceiveMessageThread()
@@ -50,7 +52,6 @@ namespace CDS.Common
 					c.GetStream ().Read (LengthBuffer, 0, 4);
 
                     DateTime Start = DateTime.Now;
-
                     while (c.Available < BitConverter.ToUInt32(LengthBuffer, 0) && (DateTime.Now - Start).TotalSeconds < 5) 
                     {
                         Thread.Sleep(50);
@@ -59,13 +60,13 @@ namespace CDS.Common
                     {
                         byte[] MessageBuffer = new byte[BitConverter.ToUInt32(LengthBuffer, 0)];
                         c.GetStream().Read(MessageBuffer, 0, MessageBuffer.Length);
-
                         OnReceiveMessage(MessageBuffer);
                     }
                     else 
                     {
                         Alive = false;
                         c.Close();
+                        OnClose();
                     }
 				} 
 				else 
@@ -79,12 +80,14 @@ namespace CDS.Common
 				catch
 				{
 					Alive = false;
+                    c.Close();
+                    OnClose();
 				}
 			}
 		}
 	}
+    public delegate void Close();
 	public delegate void ReceiveMessage(byte[] Message);
-
 	public class SentOp
 	{
 		public int OpID;

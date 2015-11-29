@@ -10,12 +10,15 @@ namespace CDS.Common
 		public Dictionary<int, CDSAgent> Agents = new Dictionary<int, CDSAgent>();
 		public ChannelEncap chan;
         public Dictionary<bool, AgentFactory> agentFactories;
+        
+        public bool Alive = true;
 		public CDSMessageHandler (ChannelEncap channel)
 		{
 			chan = channel;
 			chan.OnChannelCreate += OnChannelCreate;
 			chan.OnChannelDelete += OnChannelDelete;
 			chan.OnDataReceive += OnDataReceive;
+            chan.OnClose += ChanClosed;
 		}
 		public CDSMessageHandler (System.Net.IPAddress Address)
 		{
@@ -33,6 +36,10 @@ namespace CDS.Common
 			//add new Remote agent on local side
 			Agents.Add(ch, agentFactories[false].Open(ch, this));
 		}
+        void ChanClosed()
+        {
+            Alive = false;
+        }
 		void OnChannelDelete(int ch)
 		{
 			Agents.Remove (ch);

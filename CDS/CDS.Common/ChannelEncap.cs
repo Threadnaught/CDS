@@ -7,20 +7,26 @@ namespace CDS.Common
 {
 	public class ChannelEncap
 	{
-		//MULTIPLEXING DIFFERENT CHANNELS INTO ONE STEAM
+		//MULTIPLEXING DIFFERENT CHANNELS INTO ONE MESSAGE PROVIDER
 
 		public MessageEncap MessageProvider;
 		public ChannelCmd OnChannelCreate;
 		public ChannelCmd OnChannelDelete;
 		public ChannelData OnDataReceive;
+        public Close OnClose;
+        public bool Alive = true;
 
 		public ChannelEncap (MessageEncap message)
 		{
 			MessageProvider = message;
 			MessageProvider.OnReceiveMessage += MessageFromProvider;
-
+            MessageProvider.OnClose += MessageProviderClosed;
 		}
-
+        void MessageProviderClosed() 
+        {
+            Alive = false;
+            OnClose();
+        }
 		void MessageFromProvider(byte[] Message)
 		{
             if (Message.Length != 0)
