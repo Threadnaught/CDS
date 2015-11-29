@@ -5,96 +5,95 @@ using System.Threading;
 
 namespace CDS.Common
 {
-	public abstract class MessageEncap
-	{
-		//ABSTRACT MESSAGE PROVIDER
-		public ReceiveMessage OnReceiveMessage;
+    public abstract class MessageEncap
+    {
+        //ABSTRACT MESSAGE PROVIDER
+        public ReceiveMessage OnReceiveMessage;
         public Close OnClose;
-		public abstract void SendMessage (byte[] Msg);
-		public bool Alive = true;
-	}
-	public class TcpMessageEncap : MessageEncap
-	{
-		//VERY SIMPLE PROTOCOL TO WRAP TCP BUFFERS INTO DISCRETE MESSAGES
-		//EVERY MESSAGE LEADS WITH A 4 BYTE LENGTH (UInt32)
-
-		TcpClient c;
-
-		public TcpMessageEncap (TcpClient client)
-		{
-			c = client;
-		}
-        public void Init() 
+        public abstract void SendMessage(byte[] Msg);
+        public bool Alive = true;
+    }
+    public class TcpMessageEncap : MessageEncap
+    {
+        //VERY SIMPLE PROTOCOL TO WRAP TCP BUFFERS INTO DISCRETE MESSAGES
+        //EVERY MESSAGE LEADS WITH A 4 BYTE LENGTH (UInt32)
+        TcpClient c;
+        NetworkStream stream;
+        public TcpMessageEncap(TcpClient client)
+        {
+            c = client;
+            stream = c.GetStream();
+        }
+        public void Init()
         {
             new Thread(ReceiveMessageThread).Start();
         }
-		public override void SendMessage(byte[] Msg)
-		{
+        public override void SendMessage(byte[] Msg)
+        {
             try
             {
-                c.GetStream().Write(BitConverter.GetBytes((UInt32)Msg.Length), 0, 4);
-                c.GetStream().Write(Msg, 0, Msg.Length);
+                stream.Write(BitConverter.GetBytes((UInt32)Msg.Length), 0, 4);
+                stream.Write(Msg, 0, Msg.Length);
             }
-            catch 
+            catch
             {
                 Alive = false;
                 c.Close();
                 OnClose();
             }
-		}
-		void ReceiveMessageThread()
-		{
-			while (Alive) 
-			{
-				if (c.Available >= 4) 
-				{
-					byte[] LengthBuffer = new byte[4];
-					c.GetStream ().Read (LengthBuffer, 0, 4);
+        }
+        void ReceiveMessageThread()
+        {
+            while (Alive)
+            {
+                if (c.Available >= 4)
+                {
+                    byte[] LengthBuffer = new byte[4];
+                    stream.Read(LengthBuffer, 0, 4);
 
                     DateTime Start = DateTime.Now;
-                    while (c.Available < BitConverter.ToUInt32(LengthBuffer, 0) && (DateTime.Now - Start).TotalSeconds < 5) 
+                    while (c.Available < BitConverter.ToUInt32(LengthBuffer, 0) && (DateTime.Now - Start).TotalSeconds < 5)
                     {
                         Thread.Sleep(50);
                     }
                     if ((DateTime.Now - Start).TotalSeconds < 5)
                     {
                         byte[] MessageBuffer = new byte[BitConverter.ToUInt32(LengthBuffer, 0)];
-                        c.GetStream().Read(MessageBuffer, 0, MessageBuffer.Length);
+                        stream.Read(MessageBuffer, 0, MessageBuffer.Length);
                         OnReceiveMessage(MessageBuffer);
                     }
-                    else 
+                    else
                     {
                         Alive = false;
                         c.Close();
                         OnClose();
                     }
-				} 
-				else 
-				{
-					Thread.Sleep (50);
-				}
-				try
-				{
-					c.GetStream().Write(new byte[]{}, 0, 0);
-				}
-				catch
-				{
-					Alive = false;
+                }
+                else
+                {
+                    Thread.Sleep(50);
+                }
+                try
+                {
+                    stream.Write(new byte[] { }, 0, 0);
+                }
+                catch
+                {
+                    Alive = false;
                     c.Close();
                     OnClose();
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
     public delegate void Close();
-	public delegate void ReceiveMessage(byte[] Message);
-	public class SentOp
-	{
-		public int OpID;
-		public CDSResponses response;
-		public byte[] Reply;
-		public Reply OnReply;
-	}
-	public delegate void Reply(SentOp s);
+    public delegate void ReceiveMessage(byte[] Message);
+    public class SentOp
+    {
+        public int OpID;
+        public CDSResponses response;
+        public byte[] Reply;
+        public Reply OnReply;
+    }
+    public delegate void Reply(SentOp s);
 }
-
