@@ -24,7 +24,7 @@ namespace CDS.Data
                 SqliteWrapper.ExecNonQuery(c);
             }
         }
-        public new string Name
+        public string Name
         {
             get
             {
@@ -37,7 +37,7 @@ namespace CDS.Data
                 SqliteWrapper.ExecNonQuery(c);
             }
         }
-        public new string FullName
+        public string FullName
         {
             get
             {
@@ -51,14 +51,14 @@ namespace CDS.Data
                 }
             }
         }
-        public new NodeType Type
+        public NodeType Type
         {
             get
             {
                 return (NodeType)(int)SqliteWrapper.ExecScalar("SELECT Type FROM Nodes WHERE Id = " + Id.ToString());
             }
         }
-        public new LocalNode Parent
+        public LocalNode Parent
         {
             get
             {
@@ -69,7 +69,7 @@ namespace CDS.Data
                 ParentId = value.Id;
             }
         }
-        public new List<LocalNode> Children
+        public List<LocalNode> Children
         {
             get
             {

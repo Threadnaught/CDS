@@ -29,7 +29,7 @@ namespace CDS.Remote
                 return (NodeType)agent.SendRequest(CDSOperations.getType, FullName, new byte[0]).Reply[0];
             }
         }
-        public new RemoteNode parent
+        public RemoteNode Parent
 		{
 			get
 			{
