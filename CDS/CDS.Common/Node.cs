@@ -8,11 +8,11 @@ namespace CDS.Common
 {
     public abstract class Node
     {
-        public string Name;
-        public string FullName;
-        public NodeType Type;
-        public Node Parent;
-        public List<Node> Children;
+        public abstract string Name();
+        public abstract string FullName();
+        public abstract NodeType Type();
+        public abstract Node Parent();
+        public abstract List<Node> Children();
         public abstract void Delete();
         public abstract CDSData Read();
         public abstract void Write(CDSData Data);
@@ -28,7 +28,7 @@ namespace CDS.Common
         }
         public override string ToString()
         {
-            return FullName;
+            return FullName();
         }
     }
 }

@@ -39,14 +39,14 @@ namespace CDS.Data
 					break;
 				case CDSOperations.getType:
 					tgt = LocalNode.Resolve (TgtNode);
-					CDSHandler.SendMessage(ChannelID, (byte)CDSResponses.Success, TgtNode, OpID, new byte[]{(byte)tgt.Type});
+					CDSHandler.SendMessage(ChannelID, (byte)CDSResponses.Success, TgtNode, OpID, new byte[]{(byte)tgt.Type()});
 					break;
 				case CDSOperations.getChildren:
 					tgt = LocalNode.Resolve (TgtNode);
 					string Ret = "";
-					foreach(LocalNode c in tgt.Children)
+					foreach(LocalNode c in tgt.Children())
 					{
-						Ret += c.Name;
+						Ret += c.Name();
 						Ret += (char)0;
 					}
 					CDSHandler.SendMessage(ChannelID, (byte)CDSResponses.Success, TgtNode, OpID, System.Text.Encoding.ASCII.GetBytes(Ret));
