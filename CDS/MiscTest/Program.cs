@@ -19,8 +19,15 @@ namespace MiscTest
             Node child = n.AddChild(NodeType.Data, "Test");
             child.Delete();
             Console.WriteLine(n.Children().Count);
-
-            Console.WriteLine();
+            child = n.AddChild(NodeType.Data, "Test");
+            child.Write(new CDSData() { Type = DataType.Data, Data = new byte[1000] });
+            Console.WriteLine(child.Read());
+            Console.WriteLine(n.Children().Count);
+            for (int i = 0; i < 200; i++) 
+            {
+                n.AddChild(NodeType.Hollow, i.ToString());
+            }
+            Console.WriteLine(n.Children().Count);
             Console.ReadKey();
         }
     }
