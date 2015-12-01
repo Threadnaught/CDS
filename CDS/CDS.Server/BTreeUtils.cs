@@ -96,16 +96,45 @@ namespace CDS.Data
             NodeData t = (NodeData)ReadFromTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 });
             t.DataLen = (uint)Data.Length;
             WriteToTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 }, t);
-            UInt32 RemainingChildren = t.DataLen;
+            UInt32 RemainingBytes = t.DataLen;
             UInt32 Offset = 0;
             int LoopCount = 0;
-            while (RemainingChildren > TableData.DATA_LEN)
+            while (RemainingBytes > TableData.DATA_LEN)
             {
-                PayloadData d = new PayloadData();
-                RemainingChildren -= TableData.DATA_LEN;
+                PayloadData d = new PayloadData() { Data = new byte[TableData.DATA_LEN] };
+                Array.Copy(Data, Offset, d.Data, 0, TableData.DATA_LEN);
+                WriteToTable(new Key() { Table = TableType.Data, Node = Node, Section = (uint)LoopCount }, d);
+                RemainingBytes -= TableData.DATA_LEN;
                 Offset += TableData.DATA_LEN;
                 LoopCount++;
             }
+            if (RemainingBytes > 0)
+            {
+                PayloadData d = new PayloadData() { Data = new byte[RemainingBytes] };
+                Array.Copy(Data, Offset, d.Data, 0, RemainingBytes);
+                WriteToTable(new Key() { Table = TableType.Data, Node = Node, Section = (uint)LoopCount }, d);
+            }
+        }
+        public static byte[] GetBytes(UInt32 Node) 
+        {
+            UInt32 RemainingBytes = ((NodeData)ReadFromTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 })).DataLen;
+            UInt32 Offset = 0;
+            int LoopCount = 0;
+            byte[] Ret = new byte[RemainingBytes];
+            while (RemainingBytes > TableData.DATA_LEN) 
+            {
+                PayloadData d = (PayloadData)ReadFromTable(new Key() { Table = TableType.Data, Node = 0, Section = (uint)LoopCount });
+                d.Data.CopyTo(Ret, Offset);
+                RemainingBytes -= TableData.DATA_LEN;
+                Offset += TableData.DATA_LEN;
+                LoopCount++;
+            }
+            if (RemainingBytes > 0)
+            {
+                PayloadData d = (PayloadData)ReadFromTable(new Key() { Table = TableType.Data, Node = 0, Section = (uint)LoopCount });
+                d.Data.CopyTo(Ret, Offset);
+            }
+            return Ret;
         }
     }
 
