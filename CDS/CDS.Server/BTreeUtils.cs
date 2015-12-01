@@ -43,6 +43,52 @@ namespace CDS.Data
         {
             WriteToTableRaw(k, t.GetBytes());
         }
+        public static UInt32[] GetChildren(UInt32 Node) 
+        {
+            NodeData t = (NodeData)ReadFromTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 });
+            UInt32 RemainingChildren = t.ChildLen;
+            UInt32 Offset = 0;
+            int LoopCount = 0;
+            UInt32[] ChildIDs = new UInt32[RemainingChildren];
+            while (RemainingChildren > (TableData.DATA_LEN / 4)) 
+            {
+                //copying complete 128-child long blocks:
+                ChildData c = (ChildData)ReadFromTable(new Key() { Table = TableType.Children, Node = Node, Section = (uint)LoopCount });
+                c.Children.CopyTo(ChildIDs, Offset);
+                RemainingChildren -= (TableData.DATA_LEN / 4);
+                Offset += (TableData.DATA_LEN / 4);
+                LoopCount++;
+            }
+            //copying the dregs:
+            ChildData c1 = (ChildData)ReadFromTable(new Key() { Table = TableType.Children, Node = Node, Section = (uint)LoopCount });
+            c1.Children.CopyTo(ChildIDs, Offset);
+
+            return ChildIDs;
+        }
+        public static void SetChildren(UInt32 Node, UInt32[] Children)
+        {
+            NodeData t = (NodeData)ReadFromTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 });
+            t.ChildLen = (uint)Children.Length;
+            WriteToTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 }, t);
+            UInt32 RemainingChildren = t.ChildLen;
+            UInt32 Offset = 0;
+            int LoopCount = 0;
+            while (RemainingChildren > (TableData.DATA_LEN / 4)) 
+            {
+                ChildData d = new ChildData() { Children = new UInt32[TableData.DATA_LEN / 4] };
+                Array.Copy(Children, Offset, d.Children, 0, TableData.DATA_LEN / 4);
+                WriteToTable(new Key() { Table = TableType.Children, Node = Node, Section = (uint)LoopCount }, d);
+                RemainingChildren -= (TableData.DATA_LEN / 4);
+                Offset += (TableData.DATA_LEN / 4);
+                LoopCount++;
+            }
+            if (RemainingChildren > 0) 
+            {
+                ChildData d = new ChildData() { Children = new UInt32[TableData.DATA_LEN / 4] };
+                Array.Copy(Children, Offset, d.Children, 0, RemainingChildren);
+                WriteToTable(new Key() { Table = TableType.Children, Node = Node, Section = (uint)LoopCount }, d);
+            }
+        }
     }
 
     public enum TableType : byte
@@ -62,17 +108,19 @@ namespace CDS.Data
             {
                 case TableType.Nodes:
                     return new NodeData(data);
+                case TableType.Children:
+                    return new ChildData(data);
             }
             return null;
         }
     }
     public class NodeData : TableData
     {
-        public const int NAME_LEN = 32;
+        const int NAME_LEN = 32;
         public Int32 ParentID;
         public UInt32 ChildLen; //number of children node has
         public UInt32 DataLen; //length of data contained in node in bytes
-        public string Name;
+        public string Name = "";
         public NodeType type;
         public override byte[] GetBytes()
         {
@@ -95,8 +143,42 @@ namespace CDS.Data
             type = (NodeType)Data[12 + NAME_LEN];
         }
     }
-
-
+    public class ChildData : TableData 
+    {
+        public UInt32[] Children;
+        public override byte[] GetBytes()
+        {
+            byte[] ret = new byte[Children.Length * 4];
+            for (int i = 0; i < Children.Length; i++) 
+            {
+                BitConverter.GetBytes(Children[i]).CopyTo(ret, i * 4);
+            }
+            return ret;
+        }
+        public ChildData() { }
+        public ChildData(byte[] Data) 
+        {
+            int Len = DATA_LEN / 4;
+            Children = new UInt32[Len];
+            for(int i = 0; i < Len; i++)
+            {
+                Children[i] = BitConverter.ToUInt32(Data, i * 4);
+            }
+        }
+    }
+    public class PayloadData : TableData 
+    {
+        public byte[] Data;
+        public override byte[] GetBytes()
+        {
+            return Data;
+        }
+        public PayloadData() { }
+        public PayloadData(byte[] data) 
+        {
+            Data = data;
+        }
+    }
 
 
 
