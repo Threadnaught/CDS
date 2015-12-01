@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using System.Data;
+using System.Linq;
 
 using CDS.Common;
 
@@ -15,18 +16,12 @@ namespace CDS.Data
         {
             get
             {
-                return (int)SqliteWrapper.ExecScalar("SELECT ParentId FROM Nodes WHERE Id = " + Id.ToString());
-            }
-            set
-            {
-                SQLiteCommand c = new SQLiteCommand("UPDATE Nodes SET PatentId=@Contents WHERE Id =" + Id.ToString());
-                c.Parameters.Add("@Contents", DbType.Int32).Value = value;
-                SqliteWrapper.ExecNonQuery(c);
+                return TableUtils.GetNodeData((uint)Id).ParentID;
             }
         }
         public override string Name()
         {
-                return (string)SqliteWrapper.ExecScalar("SELECT Name FROM Nodes WHERE Id = " + Id.ToString());
+            return TableUtils.GetNodeData((uint)Id).Name;
             //set:
                 //SQLiteCommand c = new SQLiteCommand("UPDATE Nodes SET Name=@Contents WHERE Id =" + Id.ToString());
                 //c.Parameters.Add("@Contents", DbType.String).Value = ValidateName(value);
@@ -45,7 +40,7 @@ namespace CDS.Data
         }
         public override NodeType Type()
         {
-            return (NodeType)(int)SqliteWrapper.ExecScalar("SELECT Type FROM Nodes WHERE Id = " + Id.ToString());
+            return TableUtils.GetNodeData((uint)Id).type;
         }
         public override Node Parent()
         {
@@ -54,16 +49,23 @@ namespace CDS.Data
         public override List<Node> Children()
         {
             List<Node> Ret = new List<Node>();
-            SQLiteDataReader r = SqliteWrapper.ExecReader("SELECT Id FROM Nodes WHERE ParentId = " + Id.ToString());
-            while (r.Read())
+            UInt32[] IDs = TableUtils.GetChildren((uint)Id);
+            foreach (UInt32 id in IDs) 
             {
-                Ret.Add(new LocalNode() { Id = r.GetInt32(0) });
+                Ret.Add(new LocalNode() { Id = (int)id });
             }
             return Ret;
         }
         public override void Delete()
         {
-            SqliteWrapper.ExecNonQuery("DELETE FROM Nodes WHERE Id=" + Id.ToString());
+            int Parent = TableUtils.GetNodeData((uint)Id).ParentID;
+            if (Parent != -1)
+            {
+                List<UInt32> Children = TableUtils.GetChildren((uint)Parent).ToList();
+                Children.Remove((uint)Id);
+                TableUtils.SetChildren((uint)Parent, Children.ToArray());
+            }
+            TableUtils.Remove((uint)Id);
             Id = -1;
         }
         public override CDSData Read()
@@ -73,7 +75,7 @@ namespace CDS.Data
                 case NodeType.Hollow:
                     return null;
                 case NodeType.Data:
-                    return CDSData.FromRaw((byte[])SqliteWrapper.ExecScalar("SELECT Contents FROM Nodes WHERE Id = " + Id.ToString()));
+                    return CDSData.FromRaw(TableUtils.GetBytes((uint)Id));
                 case NodeType.Stream:
                     //shitshitshit
                     throw new System.NotImplementedException("go directly to prison, do not pass go, do not collect £200");
@@ -88,9 +90,7 @@ namespace CDS.Data
                 case NodeType.Hollow:
                     break;
                 case NodeType.Data:
-                    SQLiteCommand c = new SQLiteCommand("UPDATE Nodes SET Contents=@Contents WHERE Id =" + Id.ToString());
-                    c.Parameters.Add("@Contents", DbType.Binary).Value = Data.ToRaw();
-                    SqliteWrapper.ExecNonQuery(c);
+                    TableUtils.SetBytes((uint)Id, Data.ToRaw());
                     break;
                 case NodeType.Stream:
                     //shitshitshit shitshitshit
@@ -99,12 +99,15 @@ namespace CDS.Data
         }
         public override Node AddChild(NodeType type, string Name)
         {
-            SQLiteCommand c = new SQLiteCommand("INSERT INTO Nodes (Name, Type, ParentId) VALUES (@Name, @Type, @ParentId)");
-            c.Parameters.Add("@Name", DbType.String).Value = ValidateName(Name);
-            c.Parameters.Add("@Type", DbType.Int32).Value = type;
-            c.Parameters.Add("@ParentId", DbType.Int32).Value = Id;
-            SqliteWrapper.ExecNonQuery(c);
-            return new LocalNode() { Id = SqliteWrapper.LastInsertRowId };
+            uint NewId = TableUtils.GetLowestAvailableID();
+            //creating node:
+            NodeData n = new NodeData() { Name = Name, type = type, ParentID = Id };
+            TableUtils.WriteToTable(new Key() { Table = TableType.Nodes, Node = NewId, Section = 0 }, n);
+            //adding to child list:
+            List<UInt32> Children = TableUtils.GetChildren((uint)Id).ToList();
+            Children.Add(NewId);
+            TableUtils.SetChildren((uint)Id, Children.ToArray());
+            return new LocalNode() { Id = (int)NewId };
         }
 
         public static LocalNode Root
@@ -113,7 +116,7 @@ namespace CDS.Data
             {
                 return new LocalNode()
                 {
-                    Id = Convert.ToInt32(SqliteWrapper.ExecScalar("SELECT Id FROM NODES WHERE ParentId = -1"))
+                    Id = 0
                 };
             }
         }

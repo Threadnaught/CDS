@@ -51,7 +51,7 @@ namespace CDS.Data
         {
             WriteToTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 }, data);
         }
-        public static NodeData GetNodeData(UInt32 Node, NodeData data) 
+        public static NodeData GetNodeData(UInt32 Node) 
         {
             return (NodeData)ReadFromTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 });
         }
