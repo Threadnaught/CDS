@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using System.IO;
 using System.Data;
 using System.Linq;
@@ -22,10 +21,6 @@ namespace CDS.Data
         public override string Name()
         {
             return TableUtils.GetNodeData((uint)Id).Name;
-            //set:
-                //SQLiteCommand c = new SQLiteCommand("UPDATE Nodes SET Name=@Contents WHERE Id =" + Id.ToString());
-                //c.Parameters.Add("@Contents", DbType.String).Value = ValidateName(value);
-                //SqliteWrapper.ExecNonQuery(c);
         }
         public override string FullName()
         {
@@ -120,12 +115,6 @@ namespace CDS.Data
                 };
             }
         }
-        public static LocalNode ByName(string Name)
-        {
-            SQLiteCommand c = new SQLiteCommand("SELECT Id FROM Nodes WHERE Name = @Name");
-            c.Parameters.Add("@Name", DbType.String).Value = ValidateName(Name);
-            return new LocalNode() { Id = Convert.ToInt32(SqliteWrapper.ExecScalar(c)) };
-        }
         public static LocalNode Resolve(string Name)
         {
             string[] sections = Name.Split('.');
@@ -144,22 +133,6 @@ namespace CDS.Data
                     }
             }
             return n;
-        }
-        public static LocalNode Create(LocalNode Parent, string Name, NodeType Type, byte[] Contents)
-        {
-            return new LocalNode() { Id = Create(Parent.Id, Name, Type, Contents) };
-        }
-        public static int Create(int ParentId, string Name, NodeType Type, byte[] Contents)
-        {
-            if (!ValidName(Name)) throw new ArgumentException("Invalid chars in name");
-            SQLiteCommand c = new SQLiteCommand("INSERT INTO Nodes (ParentId, Name, Type, Contents) VALUES (@ParentId, @Name, @Type, @Contents)");
-            c.Parameters.Add("@ParentId", DbType.Int32).Value = ParentId;
-            c.Parameters.Add("@Name", DbType.String).Value = ValidateName(Name);
-            c.Parameters.Add("@Type", DbType.Int32).Value = (int)Type;
-            c.Parameters.Add("@Contents", DbType.Binary).Value = Contents;
-
-            SqliteWrapper.ExecNonQuery(c);
-            return SqliteWrapper.LastInsertRowId;
         }
     }
 }

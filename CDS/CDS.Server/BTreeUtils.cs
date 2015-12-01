@@ -22,10 +22,19 @@ namespace CDS.Data
                 BPlusTree<TableKey, byte[]>.Options o = new BPlusTree<TableKey, byte[]>.Options(new KeySerializer(), PrimitiveSerializer.Bytes, new KeyComparer())
                 {
                     CreateFile = CreatePolicy.IfNeeded,
-                    FileName = "Nodes.Dat" //change to Nodes.cds after finished
+                    FileName = "Nodes.Dat"
                 };
                 table = new BPlusTree<TableKey, byte[]>(o);
                 WriteToTable(new TableKey() { Table = TableType.Nodes, Node = 0, Section = 0 }, new NodeData() { Name = "root", ParentID = -1, type = NodeType.Hollow });
+            }
+            else
+            {
+                BPlusTree<TableKey, byte[]>.Options o = new BPlusTree<TableKey, byte[]>.Options(new KeySerializer(), PrimitiveSerializer.Bytes, new KeyComparer())
+                {
+                    CreateFile = CreatePolicy.IfNeeded,
+                    FileName = "Nodes.Dat"
+                };
+                table = new BPlusTree<TableKey, byte[]>(o);
             }
         }
         static byte[] ReadFromTableRaw(TableKey k)
