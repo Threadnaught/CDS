@@ -135,7 +135,7 @@ namespace CDS.Data
             byte[] Ret = new byte[RemainingBytes];
             while (RemainingBytes > TableData.DATA_LEN) 
             {
-                PayloadData d = (PayloadData)ReadFromTable(new Key() { Table = TableType.Data, Node = 0, Section = (uint)LoopCount });
+                PayloadData d = (PayloadData)ReadFromTable(new Key() { Table = TableType.Data, Node = Node, Section = (uint)LoopCount });
                 d.Data.CopyTo(Ret, Offset);
                 RemainingBytes -= TableData.DATA_LEN;
                 Offset += TableData.DATA_LEN;
@@ -143,7 +143,7 @@ namespace CDS.Data
             }
             if (RemainingBytes > 0)
             {
-                PayloadData d = (PayloadData)ReadFromTable(new Key() { Table = TableType.Data, Node = 0, Section = (uint)LoopCount });
+                PayloadData d = (PayloadData)ReadFromTable(new Key() { Table = TableType.Data, Node = Node, Section = (uint)LoopCount });
                 d.Data.CopyTo(Ret, Offset);
             }
             return Ret;

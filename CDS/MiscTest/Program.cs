@@ -15,17 +15,12 @@ namespace MiscTest
         {
             System.IO.File.Delete("Nodes.dat"); //change when finished
             TableUtils.Init();
-            TableUtils.WriteToTable(new Key() { Table = TableType.Nodes, Node = 0, Section = 0 }, new NodeData() { ChildLen = (TableData.DATA_LEN / 4 ) * 2 });
-            byte[] arrrrr = new byte[400];
-            for (int i = 0; i < arrrrr.Length; i++) 
-            {
-                arrrrr[i] = (byte)(i % 100);
-            }
-            TableUtils.SetBytes(0, arrrrr);
-            foreach (byte b in TableUtils.GetBytes(0)) 
-            {
-                Console.WriteLine(b);
-            }
+            Node n = LocalNode.Root;
+            Node child = n.AddChild(NodeType.Data, "Test");
+            child.Delete();
+            Console.WriteLine(n.Children().Count);
+
+            Console.WriteLine();
             Console.ReadKey();
         }
     }
