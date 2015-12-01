@@ -75,6 +75,8 @@
     <Compile Include="LocalNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerAgentFactory.cs" />
+    <Compile Include="TableData.cs" />
+    <Compile Include="TableKey.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CDS.Common\CDS.Common.csproj">
