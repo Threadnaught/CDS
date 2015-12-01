@@ -43,6 +43,30 @@ namespace CDS.Data
         {
             WriteToTableRaw(k, t.GetBytes());
         }
+        public static void SetChildren(UInt32 Node, UInt32[] Children)
+        {
+            NodeData t = (NodeData)ReadFromTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 });
+            t.ChildLen = (uint)Children.Length;
+            WriteToTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 }, t);
+            UInt32 RemainingChildren = t.ChildLen;
+            UInt32 Offset = 0;
+            int LoopCount = 0;
+            while (RemainingChildren > (TableData.DATA_LEN / 4))
+            {
+                ChildData d = new ChildData() { Children = new UInt32[TableData.DATA_LEN / 4] };
+                Array.Copy(Children, Offset, d.Children, 0, TableData.DATA_LEN / 4);
+                WriteToTable(new Key() { Table = TableType.Children, Node = Node, Section = (uint)LoopCount }, d);
+                RemainingChildren -= (TableData.DATA_LEN / 4);
+                Offset += (TableData.DATA_LEN / 4);
+                LoopCount++;
+            }
+            if (RemainingChildren > 0)
+            {
+                ChildData d = new ChildData() { Children = new UInt32[TableData.DATA_LEN / 4] };
+                Array.Copy(Children, Offset, d.Children, 0, RemainingChildren);
+                WriteToTable(new Key() { Table = TableType.Children, Node = Node, Section = (uint)LoopCount }, d);
+            }
+        }
         public static UInt32[] GetChildren(UInt32 Node) 
         {
             NodeData t = (NodeData)ReadFromTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 });
@@ -59,34 +83,28 @@ namespace CDS.Data
                 Offset += (TableData.DATA_LEN / 4);
                 LoopCount++;
             }
-            //copying the dregs:
-            ChildData c1 = (ChildData)ReadFromTable(new Key() { Table = TableType.Children, Node = Node, Section = (uint)LoopCount });
-            c1.Children.CopyTo(ChildIDs, Offset);
-
+            if (RemainingChildren > 0)
+            {
+                //copying the dregs:
+                ChildData c = (ChildData)ReadFromTable(new Key() { Table = TableType.Children, Node = Node, Section = (uint)LoopCount });
+                Array.Copy(c.Children, 0, ChildIDs, Offset, RemainingChildren);
+            }
             return ChildIDs;
         }
-        public static void SetChildren(UInt32 Node, UInt32[] Children)
+        public static void SetBytes(UInt32 Node, byte[] Data) 
         {
             NodeData t = (NodeData)ReadFromTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 });
-            t.ChildLen = (uint)Children.Length;
+            t.DataLen = (uint)Data.Length;
             WriteToTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 }, t);
-            UInt32 RemainingChildren = t.ChildLen;
+            UInt32 RemainingChildren = t.DataLen;
             UInt32 Offset = 0;
             int LoopCount = 0;
-            while (RemainingChildren > (TableData.DATA_LEN / 4)) 
+            while (RemainingChildren > TableData.DATA_LEN)
             {
-                ChildData d = new ChildData() { Children = new UInt32[TableData.DATA_LEN / 4] };
-                Array.Copy(Children, Offset, d.Children, 0, TableData.DATA_LEN / 4);
-                WriteToTable(new Key() { Table = TableType.Children, Node = Node, Section = (uint)LoopCount }, d);
-                RemainingChildren -= (TableData.DATA_LEN / 4);
-                Offset += (TableData.DATA_LEN / 4);
+                PayloadData d = new PayloadData();
+                RemainingChildren -= TableData.DATA_LEN;
+                Offset += TableData.DATA_LEN;
                 LoopCount++;
-            }
-            if (RemainingChildren > 0) 
-            {
-                ChildData d = new ChildData() { Children = new UInt32[TableData.DATA_LEN / 4] };
-                Array.Copy(Children, Offset, d.Children, 0, RemainingChildren);
-                WriteToTable(new Key() { Table = TableType.Children, Node = Node, Section = (uint)LoopCount }, d);
             }
         }
     }
@@ -110,6 +128,8 @@ namespace CDS.Data
                     return new NodeData(data);
                 case TableType.Children:
                     return new ChildData(data);
+                case TableType.Data:
+                    return new PayloadData(data);
             }
             return null;
         }
