@@ -20,12 +20,16 @@ namespace CDS.Data
         static BPlusTree<Key, byte[]> tree;
         public static void Init() 
         {
-            BPlusTree<Key, byte[]>.Options o = new BPlusTree<Key, byte[]>.Options(new KeySerializer(), PrimitiveSerializer.Bytes, new KeyComparer()) 
+            if (!File.Exists("Nodes.dat"))
             {
-                CreateFile = CreatePolicy.IfNeeded,
-                FileName = "Nodes.Dat" //change to Nodes.cds after finished
-            };
-            tree = new BPlusTree<Key, byte[]>(o);
+                BPlusTree<Key, byte[]>.Options o = new BPlusTree<Key, byte[]>.Options(new KeySerializer(), PrimitiveSerializer.Bytes, new KeyComparer())
+                {
+                    CreateFile = CreatePolicy.IfNeeded,
+                    FileName = "Nodes.Dat" //change to Nodes.cds after finished
+                };
+                tree = new BPlusTree<Key, byte[]>(o);
+                WriteToTable(new Key() { Table = TableType.Nodes, Node = 0, Section = 0 }, new NodeData() { Name = "root", ParentID = -1, type = NodeType.Hollow });
+            }
         }
         static byte[] ReadFromTableRaw(Key k) 
         {
@@ -42,6 +46,14 @@ namespace CDS.Data
         public static void WriteToTable(Key k, TableData t) 
         {
             WriteToTableRaw(k, t.GetBytes());
+        }
+        public static void SetNodeData(UInt32 Node, NodeData data) 
+        {
+            WriteToTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 }, data);
+        }
+        public static NodeData GetNodeData(UInt32 Node, NodeData data) 
+        {
+            return (NodeData)ReadFromTable(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 });
         }
         public static void SetChildren(UInt32 Node, UInt32[] Children)
         {
@@ -135,6 +147,22 @@ namespace CDS.Data
                 d.Data.CopyTo(Ret, Offset);
             }
             return Ret;
+        }
+        public static UInt32 GetLowestAvailableID() 
+        {
+            UInt32 Ret = 0;
+            while (true) 
+            {
+                if (!tree.ContainsKey(new Key() { Table = TableType.Nodes, Node = Ret, Section = 0 }))
+                {
+                    return Ret;
+                }
+                Ret++;
+            }
+        }
+        public static void Remove(UInt32 Node) 
+        {
+            tree.Remove(new Key() { Table = TableType.Nodes, Node = Node, Section = 0 });
         }
     }
 
