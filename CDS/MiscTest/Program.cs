@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CDS.Common;
+using CDS.Data;
 
 namespace MiscTest
 {
@@ -12,10 +13,10 @@ namespace MiscTest
     {
         static void Main(string[] args)
         {
-            CDSData d = CDSData.FromRaw(new byte[]{0, 1, 1, 1});
-            Console.WriteLine(d.Type);
-            Console.WriteLine(d.Data.Length);
-            foreach (byte b in d.ToRaw()) Console.Write(b.ToString() + " ");
+            TableUtils.Init();
+            TableUtils.WriteToTable(new Key() { Table = TableType.Nodes, Node = 0, Section = 0 }, new NodeData() { Name = "root", type = NodeType.Hollow, ParentID = -1 });
+            NodeData d = (NodeData)TableUtils.ReadFromTable(new Key() { Table = TableType.Nodes, Node = 0, Section = 0 });
+            Console.WriteLine(d.Name.Length);
             Console.ReadKey();
         }
     }
