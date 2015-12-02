@@ -13,7 +13,7 @@ class Program
     static void Main(string[] args)
     {
         File.Delete("Nodes.cds");
-        SqliteWrapper.Init();
+        TableUtils.Init();
         TcpConnectionListener.AgentCreators.Add(false, new ServerAgentFactory());
         TcpConnectionListener.Init();
     }

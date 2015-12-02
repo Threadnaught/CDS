@@ -96,7 +96,7 @@ namespace CDS.Data
         {
             uint NewId = TableUtils.GetLowestAvailableID();
             //creating node:
-            NodeData n = new NodeData() { Name = Name, type = type, ParentID = Id };
+            NodeData n = new NodeData() { Name = ValidateName(Name), type = type, ParentID = Id };
             TableUtils.WriteToTable(new TableKey() { Table = TableType.Nodes, Node = NewId, Section = 0 }, n);
             //adding to child list:
             List<UInt32> Children = TableUtils.GetChildren((uint)Id).ToList();

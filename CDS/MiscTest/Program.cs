@@ -13,7 +13,7 @@ namespace MiscTest
     {
         static void Main(string[] args)
         {
-            System.IO.File.Delete("Nodes.dat"); //change when finished
+            System.IO.File.Delete("Nodes.dat");
             TableUtils.Init();
             Node n = LocalNode.Root;
             Node child = n.AddChild(NodeType.Data, "Test");
