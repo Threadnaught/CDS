@@ -70,7 +70,7 @@ namespace CDS.Data
                 case NodeType.Hollow:
                     return null;
                 case NodeType.Data:
-                    return CDSData.FromRaw(TableUtils.GetBytes((uint)Id));
+                    return CDSData.FromRaw(ReadRaw());
                 case NodeType.Stream:
                     //shitshitshit
                     throw new System.NotImplementedException("go directly to prison, do not pass go, do not collect £200");
@@ -85,12 +85,20 @@ namespace CDS.Data
                 case NodeType.Hollow:
                     break;
                 case NodeType.Data:
-                    TableUtils.SetBytes((uint)Id, Data.ToRaw());
+                    WriteRaw(Data.ToRaw());
                     break;
                 case NodeType.Stream:
                     //shitshitshit shitshitshit
                     throw new System.NotImplementedException("building tax!");
             }
+        }
+        public byte[] ReadRaw() 
+        {
+            return TableUtils.GetBytes((uint)Id);
+        }
+        public void WriteRaw(byte[] Data) 
+        {
+            TableUtils.SetBytes((uint)Id, Data);
         }
         public override Node AddChild(NodeType type, string Name)
         {
