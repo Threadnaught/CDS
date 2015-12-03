@@ -7,8 +7,8 @@
     <ProjectGuid>{8C9A0A6B-FE2D-4A77-8155-F25C534DCEE1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CDS.Server</RootNamespace>
-    <AssemblyName>CDS.Server</AssemblyName>
+    <RootNamespace>CDS.Data</RootNamespace>
+    <AssemblyName>CDS.Data</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>f4c616ea</NuGetPackageImportStamp>
