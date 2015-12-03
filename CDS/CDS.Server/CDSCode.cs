@@ -5,9 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Jint;
 
-namespace CDS.Common
+using CDS.Common;
+
+namespace CDS.Data
 {
-    class CDSCode
+    public class CDSCode
     {
         public string Code;
         public CDSCode() { }
