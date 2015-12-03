@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agent.cs" />
+    <Compile Include="CDSCode.cs" />
     <Compile Include="CDSData.cs" />
     <Compile Include="CDSMessageHandler.cs" />
     <Compile Include="ChannelEncap.cs" />
