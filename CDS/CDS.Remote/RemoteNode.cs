@@ -21,7 +21,7 @@ namespace CDS.Remote
         }
         public override string GetName()
         {
-            return fullName.Substring(fullName.Length - (fullName.Split('.').Last().Length + 1));
+            return fullName.Substring(fullName.Length - (fullName.Split('.').Last().Length));
         }
         public override NodeType GetType()
         {

@@ -13,16 +13,14 @@ namespace RemoteTest
     {
         static void Main(string[] args)
         {
+            System.Threading.Thread.Sleep(100);
             CDSMessageHandler h = new CDSMessageHandler(System.Net.IPAddress.Parse("127.0.0.1"));
             h.agentFactories = new Dictionary<bool, AgentFactory>();
             h.agentFactories.Add(true, new RemoteAgentFactory());
             CDSRemoteAgent a = (CDSRemoteAgent)h.OpenNewChannel();
-            RemoteNode n = (RemoteNode)a.Root.AddChild(NodeType.Data, "Test");
-            while (true)
-            {
-                n.Write(new CDSData(DataType.Data, new byte[10000]));
-                Console.WriteLine(n.Read().Data.Length);
-            }
+            List<Node> children = a.Root.GetChildren();
+            Node n = children.Find(m => m.GetName() == "testnode");
+            n.Write(new CDSData() { Data = new byte[]{ 1, 2, 3}, Type = DataType.Data });
         }
     }
 }
