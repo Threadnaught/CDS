@@ -30,5 +30,12 @@ namespace CDS.Data
             e.Execute("OnRead();");
             return data;
         }
+        public void Write(CDSData data)
+        {
+            Engine e = new Engine();
+            e.Execute(Code);
+            e.SetValue("InData", data);
+            e.Execute("OnWrite();");
+        }
     }
 }
