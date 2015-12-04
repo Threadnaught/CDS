@@ -89,6 +89,7 @@ namespace CDS.Data
                 case NodeType.Stream:
                     //shitshitshit shitshitshit
                     CDSCode.FromRaw(ReadRaw()).Write(Data);
+                    break;
             }
         }
         public byte[] ReadRaw() 

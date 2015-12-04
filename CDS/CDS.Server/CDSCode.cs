@@ -15,27 +15,29 @@ namespace CDS.Data
         public CDSCode() { }
         public static CDSCode FromRaw(byte[] Raw) 
         {
-            return new CDSCode() { Code = Encoding.Unicode.GetString(Raw); };
+            return new CDSCode() { Code = Encoding.Unicode.GetString(Raw) };
         }
         public byte[] ToRaw() 
         {
             return Encoding.Unicode.GetBytes(Code);
         }
-        public CDSData Read() 
+        public CDSData Read()
         {
-            CDSData data = new CDSData();
-            Engine e = new Engine();
-            e.Execute(Code);
-            e.SetValue("OutData", data);
-            e.Execute("OnRead();");
-            return data;
+            Engine e = PrepareEngine(Code);
+            return (CDSData)e.Invoke("OnRead", new Object[0]).ToObject();
         }
         public void Write(CDSData data)
         {
-            Engine e = new Engine();
-            e.Execute(Code);
-            e.SetValue("InData", data);
-            e.Execute("OnWrite();");
+            Engine e = PrepareEngine(Code);
+            e.Invoke("OnWrite", new Object[]{ data });
+        }
+        static Engine PrepareEngine(string code) 
+        {
+            Engine e = new Engine(f => f.AllowClr(typeof(CDSData).Assembly));
+            e.SetValue("Log", new Action<Object>(Console.WriteLine)); //change to write data to a node rather than to console later
+            e.Execute("var CDSCommon = importNamespace('CDS.Common');");
+            e.Execute(code);
+            return e;
         }
     }
 }

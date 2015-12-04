@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="ServerTest" Label="ServerTest" Category="Project" />
+    <Node Id="EntityFramework 6.0.0" Label="EntityFramework 6.0.0" Category="Package" />
+    <Node Id="System.Data.SQLite 1.0.98.1" Label="System.Data.SQLite 1.0.98.1" Category="Package" />
+    <Node Id="System.Data.SQLite.Core 1.0.98.1" Label="System.Data.SQLite.Core 1.0.98.1" Category="Package" />
+    <Node Id="System.Data.SQLite.EF6 1.0.98.1" Label="System.Data.SQLite.EF6 1.0.98.1" Category="Package" />
+    <Node Id="System.Data.SQLite.Linq 1.0.98.1" Label="System.Data.SQLite.Linq 1.0.98.1" Category="Package" />
+    <Node Id="CDS.Data" Label="CDS.Data" Category="Project" />
+    <Node Id="EntityFramework 6.0.0" Label="EntityFramework 6.0.0" Category="Package" />
+    <Node Id="System.Data.SQLite 1.0.98.1" Label="System.Data.SQLite 1.0.98.1" Category="Package" />
+    <Node Id="System.Data.SQLite.Core 1.0.98.1" Label="System.Data.SQLite.Core 1.0.98.1" Category="Package" />
+    <Node Id="System.Data.SQLite.EF6 1.0.98.1" Label="System.Data.SQLite.EF6 1.0.98.1" Category="Package" />
+    <Node Id="System.Data.SQLite.Linq 1.0.98.1" Label="System.Data.SQLite.Linq 1.0.98.1" Category="Package" />
+    <Node Id="CDS.Common" Label="CDS.Common" Category="Project" />
+    <Node Id="EntityFramework 6.0.0" Label="EntityFramework 6.0.0" Category="Package" />
+    <Node Id="System.Data.SQLite 1.0.98.1" Label="System.Data.SQLite 1.0.98.1" Category="Package" />
+    <Node Id="System.Data.SQLite.Core 1.0.98.1" Label="System.Data.SQLite.Core 1.0.98.1" Category="Package" />
+    <Node Id="System.Data.SQLite.EF6 1.0.98.1" Label="System.Data.SQLite.EF6 1.0.98.1" Category="Package" />
+    <Node Id="System.Data.SQLite.Linq 1.0.98.1" Label="System.Data.SQLite.Linq 1.0.98.1" Category="Package" />
+  </Nodes>
+  <Links>
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.EF6 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.EF6 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.EF6 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.EF6 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.98.1" Target="EntityFramework 6.0.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.98.1" Target="EntityFramework 6.0.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.98.1" Target="EntityFramework 6.0.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.98.1" Target="EntityFramework 6.0.0" Category="Package Dependency" />
+    <Link Source="ServerTest" Target="System.Data.SQLite 1.0.98.1" Category="Installed Package" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.EF6 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.EF6 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.EF6 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.EF6 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.98.1" Target="EntityFramework 6.0.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.98.1" Target="EntityFramework 6.0.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.98.1" Target="EntityFramework 6.0.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.98.1" Target="EntityFramework 6.0.0" Category="Package Dependency" />
+    <Link Source="CDS.Data" Target="System.Data.SQLite 1.0.98.1" Category="Installed Package" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.EF6 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.EF6 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.EF6 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Core 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.Linq 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.98.1" Target="System.Data.SQLite.EF6 1.0.98.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.98.1" Target="EntityFramework 6.0.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.98.1" Target="EntityFramework 6.0.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.98.1" Target="EntityFramework 6.0.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.98.1" Target="EntityFramework 6.0.0" Category="Package Dependency" />
+    <Link Source="CDS.Common" Target="System.Data.SQLite 1.0.98.1" Category="Installed Package" />
+  </Links>
+  <Categories>
+    <Category Id="Project" />
+    <Category Id="Package" />
+  </Categories>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="Project" ValueLabel="True">
+      <Condition Expression="HasCategory('Project')" />
+      <Setter Property="Background" Value="Blue" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Package Dependency" ValueLabel="True">
+      <Condition Expression="HasCategory('Package Dependency')" />
+      <Setter Property="Background" Value="Yellow" />
+    </Style>
+  </Styles>
+</DirectedGraph>
