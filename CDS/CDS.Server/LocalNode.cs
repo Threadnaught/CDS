@@ -72,8 +72,7 @@ namespace CDS.Data
                 case NodeType.Data:
                     return CDSData.FromRaw(ReadRaw());
                 case NodeType.Stream:
-                    //shitshitshit
-                    throw new System.NotImplementedException("go directly to prison, do not pass go, do not collect £200");
+                    return CDSCode.FromRaw(ReadRaw()).Read();
                 default:
                     throw new System.NotImplementedException("you have won second prize in a beauty contest. collect £20");
             }
@@ -89,7 +88,7 @@ namespace CDS.Data
                     break;
                 case NodeType.Stream:
                     //shitshitshit shitshitshit
-                    throw new System.NotImplementedException("building tax!");
+                    CDSCode.FromRaw(ReadRaw()).Write(Data);
             }
         }
         public byte[] ReadRaw() 
