@@ -20,7 +20,10 @@ namespace RemoteTest
             CDSRemoteAgent a = (CDSRemoteAgent)h.OpenNewChannel();
             List<Node> children = a.Root.GetChildren();
             Node n = children.Find(m => m.GetName() == "testnode");
-            n.Write(new CDSData() { Data = new byte[]{ 1, 2, 3}, Type = DataType.Data });
+
+            for(int i = 0; i < 1000; i++) foreach (byte b in n.Read().Data) Console.Write(b.ToString() + " ");
+
+            h.chan.MessageProvider.Alive = false;
         }
     }
 }

@@ -15,7 +15,13 @@ class Program
         File.Delete("Nodes.dat");
         TableUtils.Init();
         LocalNode n = (LocalNode)LocalNode.Root.AddChild(NodeType.Stream, "TestNode");
-        n.WriteRaw(new CDSCode() { Code = "function OnWrite(data){Log(data.Data.length)}" }.ToRaw());
+        n.WriteRaw(new CDSCode() { Code = @"
+function OnWrite(data){Log(data.Data.length)}
+function OnRead(){ 
+    var ret = new CDSCommon.CDSData(); 
+    ret.Data = [new Date().getSeconds()];
+    return ret; 
+}" }.ToRaw());
         TcpConnectionListener.AgentCreators.Add(false, new ServerAgentFactory());
         TcpConnectionListener.Init();
     }

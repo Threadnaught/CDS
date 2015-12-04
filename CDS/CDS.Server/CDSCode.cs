@@ -40,4 +40,9 @@ namespace CDS.Data
             return e;
         }
     }
+    public enum CodeType : byte
+    {
+        JS = 0,
+        CSharp = 1 //when roslyn is added
+    }
 }
