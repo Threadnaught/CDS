@@ -15,25 +15,25 @@ namespace CDS.Remote
             fullName = Name;
             agent = Agent;
         }
-        public override string FullName()
+        public override string GetFullName()
         {
             return fullName;
         }
-        public override string Name()
+        public override string GetName()
         {
             return fullName.Substring(fullName.Length - (fullName.Split('.').Last().Length + 1));
         }
-        public override NodeType Type()
+        public override NodeType GetType()
         {
             return (NodeType)agent.SendRequest(CDSOperations.getType, fullName, new byte[0]).Reply[0];
         }
-        public override Node Parent()
+        public override Node GetParent()
         {
             if (fullName == "")
                 return null;
             return new RemoteNode(agent, fullName.Substring(0, fullName.Length - (fullName.Split('.').Last().Length + 1)));
         }
-        public override List<Node> Children()
+        public override List<Node> GetChildren()
         {
             byte[] bs = agent.SendRequest(CDSOperations.getChildren, fullName, new byte[] { }).Reply;
             List<string> strs = new List<string>();

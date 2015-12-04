@@ -8,17 +8,17 @@ namespace CDS.Common
 {
     public abstract class Node
     {
-        public abstract string Name();
-        public abstract string FullName();
-        public abstract NodeType Type();
-        public abstract Node Parent();
-        public abstract List<Node> Children();
+        public abstract string GetName();
+        public abstract string GetFullName();
+        public abstract NodeType GetType();
+        public abstract Node GetParent();
+        public abstract List<Node> GetChildren();
         public abstract void Delete();
         public abstract CDSData Read();
         public abstract void Write(CDSData Data);
         public abstract Node AddChild(NodeType type, string Name);
 
-        public static bool ValidName(string s)
+        public static bool IsValidName(string s)
         {
             return System.Text.RegularExpressions.Regex.IsMatch(s, "^[a-zA-Z0-9\\-_]*$");
         }
@@ -28,7 +28,7 @@ namespace CDS.Common
         }
         public override string ToString()
         {
-            return FullName();
+            return GetFullName();
         }
     }
 }

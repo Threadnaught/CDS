@@ -18,30 +18,30 @@ namespace CDS.Data
                 return TableUtils.GetNodeData((uint)Id).ParentID;
             }
         }
-        public override string Name()
+        public override string GetName()
         {
             return TableUtils.GetNodeData((uint)Id).Name;
         }
-        public override string FullName()
+        public override string GetFullName()
         {
             if (ParentId != -1)
             {
-                return Parent().FullName() + "." + Name();
+                return GetParent().GetFullName() + "." + GetName();
             }
             else
             {
-                return Name();
+                return GetName();
             }
         }
-        public override NodeType Type()
+        public override NodeType GetType()
         {
             return TableUtils.GetNodeData((uint)Id).type;
         }
-        public override Node Parent()
+        public override Node GetParent()
         {
             return new LocalNode() { Id = ParentId };
         }
-        public override List<Node> Children()
+        public override List<Node> GetChildren()
         {
             List<Node> Ret = new List<Node>();
             UInt32[] IDs = TableUtils.GetChildren((uint)Id);
@@ -65,7 +65,7 @@ namespace CDS.Data
         }
         public override CDSData Read()
         {
-            switch (Type())
+            switch (GetType())
             {
                 case NodeType.Hollow:
                     return null;
@@ -79,7 +79,7 @@ namespace CDS.Data
         }
         public override void Write(CDSData Data)
         {
-            switch (Type())
+            switch (GetType())
             {
                 case NodeType.Hollow:
                     break;
@@ -131,9 +131,9 @@ namespace CDS.Data
             {
                 if (ValidateName(s) == "root" && n == Root) continue;
                 if (s != "")
-                    foreach (LocalNode c in n.Children())
+                    foreach (LocalNode c in n.GetChildren())
                     {
-                        if (ValidateName(s) == c.Name())
+                        if (ValidateName(s) == c.GetName())
                         {
                             n = c;
                             break;
