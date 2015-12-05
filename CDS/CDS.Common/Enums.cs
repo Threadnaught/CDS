@@ -8,8 +8,9 @@
         delete = 3, //send empty, response emtpy
         getType = 4, //send empty, response series of null terminated node names
         getChildren = 5, //send emtpy, response type
-        subscribe = 6,
-        unsubscribe = 7
+        nodeExists = 6, //send empty, response 1 for exists, 0 for doesn't exist
+        subscribe = 7, //send empty, response empty
+        unsubscribe = 8 //send empty, response empty
     }
     public enum CDSResponses : byte
     {

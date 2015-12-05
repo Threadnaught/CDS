@@ -130,15 +130,21 @@ namespace CDS.Data
             foreach (string s in sections)
             {
                 if (ValidateName(s) == "root" && n == Root) continue;
+                bool Finished = false;
                 if (s != "")
                     foreach (LocalNode c in n.GetChildren())
                     {
                         if (ValidateName(s) == c.GetName())
                         {
+                            Finished = true;
                             n = c;
                             break;
                         }
                     }
+                if (!Finished) 
+                {
+                    return null;
+                }
             }
             return n;
         }

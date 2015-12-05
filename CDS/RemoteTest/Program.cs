@@ -18,8 +18,7 @@ namespace RemoteTest
             h.agentFactories = new Dictionary<bool, AgentFactory>();
             h.agentFactories.Add(true, new RemoteAgentFactory());
             CDSRemoteAgent a = (CDSRemoteAgent)h.OpenNewChannel();
-            List<Node> children = a.Root.GetChildren();
-            Node n = children.Find(m => m.GetName() == "testnode");
+            Node n = a.Root.ChildByName("TestNode");
 
             for(int i = 0; i < 1000; i++) foreach (byte b in n.Read().Data) Console.Write(b.ToString() + " ");
 

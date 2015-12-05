@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace CDS.Common
 {
@@ -19,8 +20,11 @@ namespace CDS.Common
         //EVERY MESSAGE LEADS WITH A 4 BYTE LENGTH (UInt32)
         TcpClient c;
         NetworkStream stream;
+        public static List<TcpMessageEncap> Encaps = new List<TcpMessageEncap>();
         public TcpMessageEncap(TcpClient client)
         {
+            OnClose += () => Encaps.Remove(this); 
+            Encaps.Add(this);
             c = client;
             stream = c.GetStream();
         }

@@ -18,6 +18,10 @@ namespace CDS.Common
         public abstract void Write(CDSData Data);
         public abstract Node AddChild(NodeType type, string Name);
 
+        public Node ChildByName(string Name) 
+        {
+            return GetChildren().Find(m => m.GetName() == ValidateName(Name));
+        }
         public static bool IsValidName(string s)
         {
             return System.Text.RegularExpressions.Regex.IsMatch(s, "^[a-zA-Z0-9\\-_]*$");
