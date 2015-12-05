@@ -75,5 +75,10 @@ namespace CDS.Remote
             agent.SendRequest(CDSOperations.create, fullName + "." + Name, new byte[] { (byte)type });
             return new RemoteNode(agent, fullName + "." + Name);
         }
+        public override bool GetIfExists()
+        {
+            SentOp o = agent.SendRequest(CDSOperations.nodeExists, fullName, new byte[] { });
+            return BitConverter.ToBoolean(o.Reply, 0);
+        }
     }
 }

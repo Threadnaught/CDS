@@ -112,7 +112,10 @@ namespace CDS.Data
             TableUtils.SetChildren((uint)Id, Children.ToArray());
             return new LocalNode() { Id = (int)NewId };
         }
-
+        public override bool GetIfExists()
+        {
+            return true; //MIGHT NEED TO CHANGE
+        }
         public static LocalNode Root
         {
             get
@@ -141,7 +144,7 @@ namespace CDS.Data
                             break;
                         }
                     }
-                if (!Finished) 
+                if (!Finished && s != "") 
                 {
                     return null;
                 }

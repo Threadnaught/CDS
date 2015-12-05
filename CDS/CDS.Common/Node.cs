@@ -17,6 +17,7 @@ namespace CDS.Common
         public abstract CDSData Read();
         public abstract void Write(CDSData Data);
         public abstract Node AddChild(NodeType type, string Name);
+        public abstract bool GetIfExists();
 
         public Node ChildByName(string Name) 
         {
