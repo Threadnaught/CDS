@@ -25,6 +25,7 @@ namespace CDS.Data
                     FileName = "Nodes.Dat"
                 };
                 table = new BPlusTree<TableKey, byte[]>(o);
+                WriteToTable(new TableKey() { Table = TableType.Meta, Node = 0, Section = 0 }, new MetaData() { NextAvailableId = 0 });
                 WriteToTable(new TableKey() { Table = TableType.Nodes, Node = 0, Section = 0 }, new NodeData() { Name = "root", ParentID = -1, type = NodeType.Hollow });
             }
             else
@@ -156,15 +157,11 @@ namespace CDS.Data
         }
         public static UInt32 GetLowestAvailableID()
         {
-            UInt32 Ret = 0;
-            while (true)
-            {
-                if (!table.ContainsKey(new TableKey() { Table = TableType.Nodes, Node = Ret, Section = 0 }))
-                {
-                    return Ret;
-                }
-                Ret++;
-            }
+            MetaData d = (MetaData)ReadFromTable(new TableKey() { Table = TableType.Meta, Node = 0, Section = 0 });
+            UInt32 ret = d.NextAvailableId;
+            d.NextAvailableId++;
+            WriteToTable(new TableKey() { Table = TableType.Meta, Node = 0, Section = 0}, d);
+            return ret;
         }
         public static void Remove(UInt32 Node)
         {
@@ -175,6 +172,7 @@ namespace CDS.Data
     {
         Nodes = 0, //storing information about nodes
         Children = 1, //storing information about whilch children nodes have
-        Data = 2 //storing node contents
+        Data = 2, //storing node contents
+        Meta = 4 //storing metadata about table
     }
 }

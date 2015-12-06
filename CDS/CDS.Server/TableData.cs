@@ -22,6 +22,8 @@ namespace CDS.Data
                     return new ChildData(data);
                 case TableType.Data:
                     return new PayloadData(data);
+                case TableType.Meta:
+                    return new MetaData(data);
             }
             return null;
         }
@@ -91,5 +93,17 @@ namespace CDS.Data
             Data = data;
         }
     }
-
+    public class MetaData : TableData 
+    {
+        public UInt32 NextAvailableId = 0;
+        public override byte[] GetBytes()
+        {
+            return BitConverter.GetBytes(NextAvailableId);
+        }
+        public MetaData() { }
+        public MetaData(byte[] data) 
+        {
+            NextAvailableId = BitConverter.ToUInt32(data, 0);
+        }
+    }
 }

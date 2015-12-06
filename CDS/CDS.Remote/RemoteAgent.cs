@@ -6,7 +6,7 @@ using CDS.Common;
 
 namespace CDS.Remote
 {
-	public class CDSRemoteAgent : CDSAgent
+	public class CDSRemoteAgent : Agent
 	{
 		List<SentOp> SentOps = new List<SentOp>();
 		//the side which initiated the channel (sends operations to remote agent)

@@ -5,12 +5,19 @@ using CDS.Common;
 
 namespace CDS.Data
 {
-    public class CDSLocalAgent : CDSAgent
+    public class LocalAgent : Agent
     {
         //the side which received the channel (sends responses back to local agent)
         //parsing commands, sending responses
         public int ChannelID;
-        public static Dictionary<CDSLocalAgent, List<LocalNode>> Subscriptions = new Dictionary<CDSLocalAgent, List<LocalNode>>();
+        public int AgentId;
+        public static Dictionary<LocalAgent, List<LocalNode>> Subscriptions = new Dictionary<LocalAgent, List<LocalNode>>();
+        public LocalAgent()
+        {
+            AgentId = 0;
+            while(Agents.Keys.Contains(AgentId)) AgentId++;
+            Agents.Add(AgentId, this);
+        }
         public override void OnReceiveCDSMessage(byte Op, string TgtNode, int OpID, byte[] Body)
         {
             //apply CDSOperation specified by Op and send response
@@ -78,6 +85,7 @@ namespace CDS.Data
         public void OnClose() 
         {
             if (Subscriptions.Keys.Contains(this)) Subscriptions.Remove(this);
+            Agents.Remove();
         }
     }
 }

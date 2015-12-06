@@ -7,7 +7,7 @@ namespace CDS.Common
 	public class CDSMessageHandler
 	{
 		//PARSING AND TRANSMITTING CDS MESSAGES FROM AND TO AGENTS
-		public Dictionary<int, CDSAgent> Agents = new Dictionary<int, CDSAgent>();
+		public Dictionary<int, Agent> Agents = new Dictionary<int, Agent>();
 		public ChannelEncap chan;
         public static Dictionary<bool, AgentFactory> agentFactories = new Dictionary<bool,AgentFactory>();
         
@@ -75,7 +75,7 @@ namespace CDS.Common
 
 			chan.SendMessage (Message, ch);
 		}
-		public CDSAgent OpenNewChannel()
+		public Agent OpenNewChannel()
 		{
 			int ID = 0;
 			foreach(int NewID in Agents.Keys)
@@ -87,7 +87,7 @@ namespace CDS.Common
             Agents.Add(ID, agentFactories[true].Open(ID, this));
 			return Agents[ID];
 		}
-		public void CloseChannel(CDSAgent a)
+		public void CloseChannel(Agent a)
 		{
 			int ID = Agents.FirstOrDefault (x => x.Value == a).Key;
 			Agents.Remove (ID);

@@ -10,9 +10,9 @@ namespace CDS.Data
 {
     public class ServerAgentFactory : AgentFactory
     {
-        public override CDSAgent Open(int ChannelID, CDSMessageHandler Handler)
+        public override Agent Open(int ChannelID, CDSMessageHandler Handler)
         {
-            return new CDSLocalAgent() { CDSHandler = Handler, ChannelID = ChannelID };
+            return new LocalAgent() { CDSHandler = Handler, ChannelID = ChannelID };
         }
     }
 }
