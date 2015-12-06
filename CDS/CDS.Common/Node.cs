@@ -13,7 +13,7 @@ namespace CDS.Common
         public abstract NodeType GetType();
         public abstract Node GetParent();
         public abstract List<Node> GetChildren();
-        public abstract void Delete();
+        public virtual void Delete() { foreach (Node n in GetChildren()) n.Delete(); }
         public abstract CDSData Read();
         public abstract void Write(CDSData Data);
         public abstract Node AddChild(NodeType type, string Name);

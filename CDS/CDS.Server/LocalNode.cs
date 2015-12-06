@@ -53,6 +53,7 @@ namespace CDS.Data
         }
         public override void Delete()
         {
+            base.Delete();
             int Parent = TableUtils.GetNodeData((uint)Id).ParentID;
             if (Parent != -1)
             {
