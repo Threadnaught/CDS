@@ -13,12 +13,12 @@ namespace RemoteTest
     {
         static void Main(string[] args)
         {
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(1000);
             Remote.Start();
             Node n = Remote.FromName("127.0.0.1.TestNode");
 
-            Console.WriteLine(n.GetIfExists());
-            //for(int i = 0; i < 1000; i++) foreach (byte b in n.Read().Data) Console.Write(b.ToString() + " ");
+            //Console.WriteLine(n.GetIfExists());
+            while(true) foreach (byte b in n.Read().Data) Console.Write(b.ToString() + "\t");
         }
     }
 }

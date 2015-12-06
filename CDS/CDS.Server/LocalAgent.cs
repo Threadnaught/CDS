@@ -75,5 +75,9 @@ namespace CDS.Data
                 CDSHandler.SendMessage(ChannelID, (byte)CDSResponses.Failure, TgtNode, OpID, new byte[0]);
             }
         }
+        public void OnClose() 
+        {
+            if (Subscriptions.Keys.Contains(this)) Subscriptions.Remove(this);
+        }
     }
 }
