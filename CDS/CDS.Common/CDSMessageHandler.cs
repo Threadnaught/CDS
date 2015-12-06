@@ -9,7 +9,7 @@ namespace CDS.Common
 		//PARSING AND TRANSMITTING CDS MESSAGES FROM AND TO AGENTS
 		public Dictionary<int, CDSAgent> Agents = new Dictionary<int, CDSAgent>();
 		public ChannelEncap chan;
-        public Dictionary<bool, AgentFactory> agentFactories;
+        public static Dictionary<bool, AgentFactory> agentFactories = new Dictionary<bool,AgentFactory>();
         
         public bool Alive = true;
 		public CDSMessageHandler (ChannelEncap channel)
@@ -97,4 +97,3 @@ namespace CDS.Common
 
 
 }
-

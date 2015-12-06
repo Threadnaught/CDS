@@ -43,7 +43,6 @@ namespace CDS.Common
 					TcpMessageEncap m = new TcpMessageEncap (listener.AcceptTcpClient ());
 					ChannelEncap c = new ChannelEncap (m);
                     CDSMessageHandler h = new CDSMessageHandler(c);
-                    h.agentFactories = AgentCreators;
 					AcceptedConnections.Add (h);
                     m.Init();
 				}
