@@ -14,8 +14,8 @@ namespace CDS.Data
         public static Dictionary<LocalAgent, List<LocalNode>> Subscriptions = new Dictionary<LocalAgent, List<LocalNode>>();
         public LocalAgent()
         {
-            AgentId = 0;
-            while(Agents.Keys.Contains(AgentId)) AgentId++;
+            AgentId = NextAgentId;
+            NextAgentId++;
             Agents.Add(AgentId, this);
         }
         public override void OnReceiveCDSMessage(byte Op, string TgtNode, int OpID, byte[] Body)
@@ -85,7 +85,7 @@ namespace CDS.Data
         public void OnClose() 
         {
             if (Subscriptions.Keys.Contains(this)) Subscriptions.Remove(this);
-            Agents.Remove();
+            Agents.Remove(AgentId);
         }
     }
 }

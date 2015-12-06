@@ -4,6 +4,7 @@ namespace CDS.Common
     public abstract class Agent
     {
         public static Dictionary<int, Agent> Agents = new Dictionary<int, Agent>();
+        public static int NextAgentId = 0;
         public CDSMessageHandler CDSHandler;
         public abstract void OnReceiveCDSMessage(byte Op, string TgtNode, int OpID, byte[] Body);
     }
