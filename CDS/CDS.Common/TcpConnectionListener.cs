@@ -6,31 +6,31 @@ using System.Collections.Generic;
 
 namespace CDS.Common
 {
-	public static class TcpConnectionListener
-	{
+    public static class TcpConnectionListener
+    {
         //LISTENING FOR TCP CONNECTIONS AND CREATING HANDLERS FOR THEM
-        public static Dictionary<bool, AgentFactory> AgentCreators = new Dictionary<bool,AgentFactory>();
-		public static List<CDSMessageHandler> AcceptedConnections = new List<CDSMessageHandler> ();
-		static TcpListener listener;
-		public static bool Alive
-		{
-			get{ return AliveInternal; }
-			set
-			{
-				foreach (CDSMessageHandler h in AcceptedConnections) 
-				{
-					h.chan.MessageProvider.Alive = value;
-				}
-				AliveInternal = value;
-			}
-		}
-		static bool AliveInternal = true;
+        public static Dictionary<bool, AgentFactory> AgentCreators = new Dictionary<bool, AgentFactory>();
+        public static List<CDSMessageHandler> AcceptedConnections = new List<CDSMessageHandler>();
+        static TcpListener listener;
+        public static bool Alive
+        {
+            get { return AliveInternal; }
+            set
+            {
+                foreach (CDSMessageHandler h in AcceptedConnections)
+                {
+                    h.chan.MessageProvider.Alive = value;
+                }
+                AliveInternal = value;
+            }
+        }
+        static bool AliveInternal = true;
 
-		public static void Init()
-		{
-			listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 13245);
-			listener.Start ();
-			Alive = true;
+        public static void Init()
+        {
+            listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 13245);
+            listener.Start();
+            Alive = true;
             Task.Factory.StartNew(Listen);
         }
         static void Listen()
@@ -54,8 +54,7 @@ namespace CDS.Common
                 }
             }
             Task.Factory.StartNew(Listen);
-            
         }
-	}
+    }
 }
 

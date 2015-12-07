@@ -48,37 +48,40 @@ namespace CDS.Common
         }
         void ReceiveMessage()
         {
-                if (c.Available >= 4)
-                {
-                    byte[] LengthBuffer = new byte[4];
-                    stream.Read(LengthBuffer, 0, 4);
-
-                    DateTime Start = DateTime.Now;
-                    while (c.Available < BitConverter.ToUInt32(LengthBuffer, 0) && (DateTime.Now - Start).TotalSeconds < 5){ }
-                    if ((DateTime.Now - Start).TotalSeconds < 5)
-                    {
-                        byte[] MessageBuffer = new byte[BitConverter.ToUInt32(LengthBuffer, 0)];
-                        stream.Read(MessageBuffer, 0, MessageBuffer.Length);
-                        OnReceiveMessage(MessageBuffer);
-                    }
-                    else
-                    {
-                        Alive = false;
-                        c.Close();
-                        OnClose();
-                    }
-                }
-                try
-                {
-                    stream.Write(new byte[] { }, 0, 0);
-                }
-                catch
-                {
-                    Alive = false;
-                    c.Close();
-                    OnClose();
-                }
+            if (c.Available >= 4)
+            {
+                Task.Factory.StartNew(MessageIncoming);
+            }
+            try
+            {
+                stream.Write(new byte[] { }, 0, 0);
+            }
+            catch
+            {
+                Alive = false;
+                c.Close();
+                OnClose();
+            }
             if (Alive) Task.Factory.StartNew(ReceiveMessage);
+        }
+        void MessageIncoming()
+        {
+            byte[] LengthBuffer = new byte[4];
+            stream.Read(LengthBuffer, 0, 4);
+            DateTime Start = DateTime.Now;
+            while (c.Available < BitConverter.ToUInt32(LengthBuffer, 0) && (DateTime.Now - Start).TotalSeconds < 5) { }
+            if ((DateTime.Now - Start).TotalSeconds < 5)
+            {
+                byte[] MessageBuffer = new byte[BitConverter.ToUInt32(LengthBuffer, 0)];
+                stream.Read(MessageBuffer, 0, MessageBuffer.Length);
+                OnReceiveMessage(MessageBuffer);
+            }
+            else
+            {
+                Alive = false;
+                c.Close();
+                OnClose();
+            }
         }
     }
     public delegate void Close();
