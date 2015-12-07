@@ -15,6 +15,20 @@ namespace RemoteTest
         {
             System.Threading.Thread.Sleep(1000);
             Remote.Start();
+
+            CDSMessageHandler h = new CDSMessageHandler(System.Net.IPAddress.Parse("127.0.0.1"));
+            CDSRemoteAgent[] agents = new CDSRemoteAgent[500];
+            for (int i = 0; i < 500; i++)
+            {
+                agents[i] = (CDSRemoteAgent)h.OpenNewChannel();
+            }
+            while (true)
+            {
+                foreach (CDSRemoteAgent a in agents)
+                {
+                    Console.WriteLine(a.Root.ChildByName("TestNode").Read().Data.First());
+                }
+            }
             Node n = Remote.FromName("127.0.0.1.TestNode");
 
             //Console.WriteLine(n.GetIfExists());
