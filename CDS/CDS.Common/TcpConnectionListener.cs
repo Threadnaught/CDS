@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace CDS.Common
@@ -31,33 +31,31 @@ namespace CDS.Common
 			listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 13245);
 			listener.Start ();
 			Alive = true;
-			new Thread (ListenThread).Start ();
-		}
-		static void ListenThread()
-		{
-			while (Alive) 
-			{
-				if (listener.Pending ()) 
-				{
-					Console.WriteLine ("Adding connection");
-					TcpMessageEncap m = new TcpMessageEncap (listener.AcceptTcpClient ());
-					ChannelEncap c = new ChannelEncap (m);
-                    CDSMessageHandler h = new CDSMessageHandler(c);
-					AcceptedConnections.Add (h);
-                    m.Init();
-				}
-				for (int i = 0; i < AcceptedConnections.Count; i++) 
-				{
-					if (!AcceptedConnections [i].chan.MessageProvider.Alive) 
-					{
-						Console.WriteLine ("Removing connnection");
-						AcceptedConnections.RemoveAt (i);
-						i--;
-					}
-				}
-				Thread.Sleep (50);
-			}
-		}
+            Task.Factory.StartNew(Listen);
+        }
+        static void Listen()
+        {
+            if (listener.Pending())
+            {
+                Console.WriteLine("Adding connection");
+                TcpMessageEncap m = new TcpMessageEncap(listener.AcceptTcpClient());
+                ChannelEncap c = new ChannelEncap(m);
+                CDSMessageHandler h = new CDSMessageHandler(c);
+                AcceptedConnections.Add(h);
+                m.Init();
+            }
+            for (int i = 0; i < AcceptedConnections.Count; i++)
+            {
+                if (!AcceptedConnections[i].chan.MessageProvider.Alive)
+                {
+                    Console.WriteLine("Removing connnection");
+                    AcceptedConnections.RemoveAt(i);
+                    i--;
+                }
+            }
+            Task.Factory.StartNew(Listen);
+            
+        }
 	}
 }
 
