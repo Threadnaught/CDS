@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace CDS.Common
@@ -21,6 +21,7 @@ namespace CDS.Common
         TcpClient c;
         NetworkStream stream;
         public static List<TcpMessageEncap> Encaps = new List<TcpMessageEncap>();
+        bool ReceivingMessage = false;
         public TcpMessageEncap(TcpClient client)
         {
             OnClose += () => Encaps.Remove(this); 
@@ -30,7 +31,7 @@ namespace CDS.Common
         }
         public void Init()
         {
-            new Thread(ReceiveMessageThread).Start();
+            Task.Factory.StartNew(ReceiveMessage);
         }
         public override void SendMessage(byte[] Msg)
         {
@@ -46,48 +47,44 @@ namespace CDS.Common
                 OnClose();
             }
         }
-        void ReceiveMessageThread()
+        void ReceiveMessage()
         {
-            while (Alive)
+            if (c.Available >= 4 && !ReceivingMessage)
             {
-                if (c.Available >= 4)
-                {
-                    byte[] LengthBuffer = new byte[4];
-                    stream.Read(LengthBuffer, 0, 4);
-
-                    DateTime Start = DateTime.Now;
-                    while (c.Available < BitConverter.ToUInt32(LengthBuffer, 0) && (DateTime.Now - Start).TotalSeconds < 5)
-                    {
-                        Thread.Sleep(50);
-                    }
-                    if ((DateTime.Now - Start).TotalSeconds < 5)
-                    {
-                        byte[] MessageBuffer = new byte[BitConverter.ToUInt32(LengthBuffer, 0)];
-                        stream.Read(MessageBuffer, 0, MessageBuffer.Length);
-                        OnReceiveMessage(MessageBuffer);
-                    }
-                    else
-                    {
-                        Alive = false;
-                        c.Close();
-                        OnClose();
-                    }
-                }
-                else
-                {
-                    Thread.Sleep(50);
-                }
-                try
-                {
-                    stream.Write(new byte[] { }, 0, 0);
-                }
-                catch
-                {
-                    Alive = false;
-                    c.Close();
-                    OnClose();
-                }
+                ReceivingMessage = true;
+                Task.Factory.StartNew(MessageIncoming);
             }
+            try
+            {
+                stream.Write(new byte[] { }, 0, 0);
+            }
+            catch
+            {
+                Alive = false;
+                c.Close();
+                OnClose();
+            }
+            if (Alive) Task.Factory.StartNew(ReceiveMessage);
+        }
+        void MessageIncoming()
+        {
+            byte[] LengthBuffer = new byte[4];
+            stream.Read(LengthBuffer, 0, 4);
+            DateTime Start = DateTime.Now;
+            while (c.Available < BitConverter.ToUInt32(LengthBuffer, 0) && (DateTime.Now - Start).TotalSeconds < 5) { }
+            if ((DateTime.Now - Start).TotalSeconds < 5)
+            {
+                byte[] MessageBuffer = new byte[BitConverter.ToUInt32(LengthBuffer, 0)];
+                stream.Read(MessageBuffer, 0, MessageBuffer.Length);
+                OnReceiveMessage(MessageBuffer);
+            }
+            else
+            {
+                Alive = false;
+                c.Close();
+                OnClose();
+            }
+            ReceivingMessage = false;
         }
     }
     public delegate void Close();
