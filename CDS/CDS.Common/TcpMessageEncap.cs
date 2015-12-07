@@ -21,6 +21,7 @@ namespace CDS.Common
         TcpClient c;
         NetworkStream stream;
         public static List<TcpMessageEncap> Encaps = new List<TcpMessageEncap>();
+        bool ReceivingMessage = false;
         public TcpMessageEncap(TcpClient client)
         {
             OnClose += () => Encaps.Remove(this); 
@@ -48,8 +49,9 @@ namespace CDS.Common
         }
         void ReceiveMessage()
         {
-            if (c.Available >= 4)
+            if (c.Available >= 4 && !ReceivingMessage)
             {
+                ReceivingMessage = true;
                 Task.Factory.StartNew(MessageIncoming);
             }
             try
@@ -82,6 +84,7 @@ namespace CDS.Common
                 c.Close();
                 OnClose();
             }
+            ReceivingMessage = false;
         }
     }
     public delegate void Close();
