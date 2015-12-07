@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace CDS.Common
@@ -30,7 +30,7 @@ namespace CDS.Common
         }
         public void Init()
         {
-            new Thread(ReceiveMessageThread).Start();
+            Task.Factory.StartNew(ReceiveMessage);
         }
         public override void SendMessage(byte[] Msg)
         {
@@ -46,20 +46,15 @@ namespace CDS.Common
                 OnClose();
             }
         }
-        void ReceiveMessageThread()
+        void ReceiveMessage()
         {
-            while (Alive)
-            {
                 if (c.Available >= 4)
                 {
                     byte[] LengthBuffer = new byte[4];
                     stream.Read(LengthBuffer, 0, 4);
 
                     DateTime Start = DateTime.Now;
-                    while (c.Available < BitConverter.ToUInt32(LengthBuffer, 0) && (DateTime.Now - Start).TotalSeconds < 5)
-                    {
-                        Thread.Sleep(50);
-                    }
+                    while (c.Available < BitConverter.ToUInt32(LengthBuffer, 0) && (DateTime.Now - Start).TotalSeconds < 5){ }
                     if ((DateTime.Now - Start).TotalSeconds < 5)
                     {
                         byte[] MessageBuffer = new byte[BitConverter.ToUInt32(LengthBuffer, 0)];
@@ -73,10 +68,6 @@ namespace CDS.Common
                         OnClose();
                     }
                 }
-                else
-                {
-                    Thread.Sleep(50);
-                }
                 try
                 {
                     stream.Write(new byte[] { }, 0, 0);
@@ -87,7 +78,7 @@ namespace CDS.Common
                     c.Close();
                     OnClose();
                 }
-            }
+            if (Alive) Task.Factory.StartNew(ReceiveMessage);
         }
     }
     public delegate void Close();

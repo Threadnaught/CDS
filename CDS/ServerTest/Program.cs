@@ -23,5 +23,6 @@ function OnRead(){
     return ret; 
 }"
         }.ToRaw());
+        Console.ReadKey();
     }
 }
