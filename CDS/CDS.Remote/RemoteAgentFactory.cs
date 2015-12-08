@@ -8,11 +8,19 @@ using CDS.Common;
 
 namespace CDS.Remote
 {
-    public class RemoteAgentFactory : AgentFactory
+    public static class RemoteAgentFactory
     {
-        public override Agent Open(int ChannelID, CDSMessageHandler Handler)
+        public static CDSRemoteAgent OpenChannel(this CDSMessageHandler h)
         {
-            return new CDSRemoteAgent() { CDSHandler = Handler, ChannelID = ChannelID };
+            int ID = 0;
+            foreach (int NewID in h.Agents.Keys)
+            {
+                if (ID <= NewID)
+                    ID = NewID + 1;
+            }
+            h.chan.CreateChannel(ID);
+            h.Agents.Add(ID, new CDSRemoteAgent() { CDSHandler = h, ChannelID = ID });
+            return (CDSRemoteAgent)h.Agents[ID];
         }
     }
 }

@@ -75,18 +75,6 @@ namespace CDS.Common
 
 			chan.SendMessage (Message, ch);
 		}
-		public Agent OpenNewChannel()
-		{
-			int ID = 0;
-			foreach(int NewID in Agents.Keys)
-			{
-				if (ID <= NewID)
-					ID = NewID + 1;
-			}
-			chan.CreateChannel (ID);
-            Agents.Add(ID, agentFactories[true].Open(ID, this));
-			return Agents[ID];
-		}
 		public void CloseChannel(Agent a)
 		{
 			int ID = Agents.FirstOrDefault (x => x.Value == a).Key;

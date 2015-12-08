@@ -12,10 +12,6 @@ namespace CDS.Remote
 {
     public static class Remote
     {
-        public static void Start()
-        {
-            CDSMessageHandler.agentFactories.Add(true, new RemoteAgentFactory());
-        }
         public static RemoteNode FromName(string Name) 
         {
             //add link capability
@@ -24,7 +20,7 @@ namespace CDS.Remote
             IPAddress Address = IPAddress.Parse(Name.Substring(0, Len));
 
             CDSMessageHandler h = new CDSMessageHandler(Address);
-            RemoteNode n = ((CDSRemoteAgent)h.OpenNewChannel()).Root;
+            RemoteNode n = ((CDSRemoteAgent)h.OpenChannel()).Root;
 
             for (int i = 4; i < Sections.Length; i++) 
             {
