@@ -33,7 +33,7 @@ namespace CDS.Data
                 return GetName();
             }
         }
-        public override NodeType GetType()
+        public override NodeType GetNodeType()
         {
             return TableUtils.GetNodeData((uint)Id).type;
         }
@@ -66,7 +66,7 @@ namespace CDS.Data
         }
         public override CDSData Read()
         {
-            switch (GetType())
+            switch (GetNodeType())
             {
                 case NodeType.Hollow:
                     return null;
@@ -80,7 +80,7 @@ namespace CDS.Data
         }
         public override void Write(CDSData Data)
         {
-            switch (GetType())
+            switch (GetNodeType())
             {
                 case NodeType.Hollow:
                     break;

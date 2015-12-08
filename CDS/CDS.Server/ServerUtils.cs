@@ -13,7 +13,7 @@ namespace CDS.Data
         public static void Start() 
         {
             TableUtils.Init();
-            CDSMessageHandler.agentFactories.Add(false, new ServerAgentFactory());
+            CDSMessageHandler.RemoteOpenFactory = new ServerAgentFactory();
             TcpConnectionListener.Init();
         }
     }

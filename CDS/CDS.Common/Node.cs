@@ -10,7 +10,7 @@ namespace CDS.Common
     {
         public abstract string GetName();
         public abstract string GetFullName();
-        public abstract NodeType GetType();
+        public abstract NodeType GetNodeType();
         public abstract Node GetParent();
         public abstract List<Node> GetChildren();
         public virtual void Delete() { foreach (Node n in GetChildren()) n.Delete(); }

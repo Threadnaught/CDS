@@ -22,6 +22,15 @@ namespace CDS.Common
         NetworkStream stream;
         public static List<TcpMessageEncap> Encaps = new List<TcpMessageEncap>();
         bool ReceivingMessage = false;
+        public TcpMessageEncap(IPAddress target)
+        {
+            TcpClient client = new TcpClient();
+            client.Connect(target, 13245);
+            OnClose += () => Encaps.Remove(this);
+            Encaps.Add(this);
+            c = client;
+            stream = c.GetStream();
+        }
         public TcpMessageEncap(TcpClient client)
         {
             OnClose += () => Encaps.Remove(this); 

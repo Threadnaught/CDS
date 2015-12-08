@@ -23,7 +23,7 @@ namespace CDS.Remote
         {
             return fullName.Substring(fullName.Length - (fullName.Split('.').Last().Length));
         }
-        public override NodeType GetType()
+        public override NodeType GetNodeType()
         {
             return (NodeType)agent.SendRequest(CDSOperations.getType, fullName, new byte[0]).Reply[0];
         }

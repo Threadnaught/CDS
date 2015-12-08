@@ -9,7 +9,7 @@ namespace CDS.Common
 		//PARSING AND TRANSMITTING CDS MESSAGES FROM AND TO AGENTS
 		public Dictionary<int, Agent> Agents = new Dictionary<int, Agent>();
 		public ChannelEncap chan;
-        public static Dictionary<bool, AgentFactory> agentFactories = new Dictionary<bool,AgentFactory>();
+        public static AgentFactory RemoteOpenFactory;
         
         public bool Alive = true;
 		public CDSMessageHandler (ChannelEncap channel)
@@ -34,7 +34,7 @@ namespace CDS.Common
 		void OnChannelCreate(int ch)
 		{
 			//add new Remote agent on local side
-			Agents.Add(ch, agentFactories[false].Open(ch, this));
+			Agents.Add(ch, RemoteOpenFactory.Open(ch, this));
 		}
         void ChanClosed()
         {

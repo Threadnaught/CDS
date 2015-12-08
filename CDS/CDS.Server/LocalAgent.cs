@@ -47,7 +47,7 @@ namespace CDS.Data
                         break;
                     case CDSOperations.getType:
                         tgt = LocalNode.Resolve(TgtNode);
-                        CDSHandler.SendMessage(ChannelID, (byte)CDSResponses.Success, TgtNode, OpID, new byte[] { (byte)tgt.GetType() });
+                        CDSHandler.SendMessage(ChannelID, (byte)CDSResponses.Success, TgtNode, OpID, new byte[] { (byte)tgt.GetNodeType() });
                         break;
                     case CDSOperations.getChildren:
                         tgt = LocalNode.Resolve(TgtNode);

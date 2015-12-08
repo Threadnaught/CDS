@@ -50,6 +50,7 @@
     <Compile Include="Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TcpConnectionListener.cs" />
+    <Compile Include="TcpConnectionPool.cs" />
     <Compile Include="TcpMessageEncap.cs" />
   </ItemGroup>
   <ItemGroup>
