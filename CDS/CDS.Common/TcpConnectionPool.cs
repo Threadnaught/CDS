@@ -19,43 +19,109 @@ namespace CDS.Common
         public IPAddress target;
         TcpClient client;
         public DateTime ClientExpires;
-        public Dictionary<UInt32, Channel> Channels = new Dictionary<uint, Channel>();
-        public Dictionary<UInt32, DateTime> ChannelsExpire = new Dictionary<uint, DateTime>();
+        public Dictionary<UInt64, Channel> Channels = new Dictionary<UInt64, Channel>();
+        public Dictionary<UInt64, DateTime> ChannelsExpire = new Dictionary<UInt64, DateTime>();
         public void NewClient(TcpClient cli)
         {
-            client = cli;
-            ClientExpires = DateTime.Now + TcpConPool.ConnectionExpireTime;
-            Task.Factory.StartNew(ConnectionTask);
+            lock (this)
+            {
+                if (client == null)
+                {
+                    client = cli;
+                    ClientExpires = DateTime.Now + TcpConPool.ConnectionExpireTime;
+                    Task.Factory.StartNew(ConnectionTask);
+                }
+                else
+                {
+                    client = cli;
+                    ClientExpires = DateTime.Now + TcpConPool.ConnectionExpireTime;
+                }
+            }
         }
         void ConnectionTask()
         {
-            if (client.Available >= 4)
+            lock (this)
             {
-                //message ahoy!
-                ClientExpires = DateTime.Now + TcpConPool.ConnectionExpireTime;
+                Stream s = client.GetStream();
+                if (client == null) return;
+                //checking if there is an incoming message:
+                if (client.Available >= 4)
+                {
+                    //message ahoy!
+                    UInt64 Length = BitConverter.ToUInt64(s.ReadBytesFromStream(8), 0);
+                    MessageType type = (MessageType)s.ReadByte();
+                    if ((byte)type > 127)
+                    {
+                        //response type
+                        UInt64 MessageID = BitConverter.ToUInt64(s.ReadBytesFromStream(8), 0);
+                        foreach (Channel c in Channels.Values)
+                        {
+                            if (c.MessagesAwaiting.Keys.Contains(MessageID))
+                            {
+                                c.MessagesAwaiting[MessageID].ReceiveResponse(s, Length - 1);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //request type
+
+                    }
+                    ClientExpires = DateTime.Now + TcpConPool.ConnectionExpireTime;
+                }
+                //checking if the client has expired:
+                if (ClientExpires > DateTime.Now)
+                {
+                    client.Close();
+                    client = null;
+                    return;
+                }
+                //checking if the client was closed:
+                try
+                {
+                    s.Write(new byte[0], 0, 0);
+                }
+                catch
+                {
+                    client.Close();
+                    client = null;
+                    return;
+                }
+                //scheduling the next run through
+                Task.Factory.StartNew(ConnectionTask);
             }
-            if (ClientExpires > DateTime.Now)
-            {
-                client.Close();
-                client = null;
-                return;
-            }
-            try
-            {
-                client.GetStream().Write(new byte[0], 0, 0);
-            }
-            catch
-            {
-                client.Close();
-                client = null;
-                return;
-            }
-            Task.Factory.StartNew(ConnectionTask);
         }
     }
     public class Channel
     {
+        public Dictionary<UInt64, Request> MessagesAwaiting = new Dictionary<UInt64, Request>();
+    }
+    public class Request
+    {
+        public void ReceiveResponse(Stream response, UInt64 Length)
+        {
 
+        }
+    }
+    public static class Utils
+    {
+        public static byte[] ReadBytesFromStream(this Stream s, int Len)
+        {
+            byte[] Ret = new byte[Len];
+            s.Read(Ret, 0, Len);
+            return Ret;
+        }
+        public static byte[] GenNoncollidingBits(int len)
+        {
+            byte[] ret = new byte[len];
+            Array.Copy(Guid.NewGuid().ToByteArray(), ret, len);
+            return ret;
+        }
+        public static UInt64 GenNoncollidingUint()
+        {
+            return BitConverter.ToUInt64(GenNoncollidingBits(8), 0);
+        }
     }
     public enum MessageType : byte
     {
