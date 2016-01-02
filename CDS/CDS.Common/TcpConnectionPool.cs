@@ -5,102 +5,73 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
+using System.Net.Sockets;
 
 namespace CDS.Common
 {
-    public static class TcpConnectionPool
+    public static class TcpConPool
     {
-        public static Dictionary<IPAddress, TcpMessageEncap> Messages = new Dictionary<IPAddress, TcpMessageEncap>();
-        public static Dictionary<ulong, Channel> Channels = new Dictionary<ulong, Channel>();
-        public static void SendMessageToOtherSide(IPAddress target, ulong ChannelId, byte[] message)
+        public static TimeSpan ConnectionExpireTime = new TimeSpan(0, 10, 0);
+        public static Dictionary<IPAddress, Connection> Connections = new Dictionary<IPAddress, Connection>();
+    }
+    public class Connection
+    {
+        public IPAddress target;
+        TcpClient client;
+        public DateTime ClientExpires;
+        public Dictionary<UInt32, Channel> Channels = new Dictionary<uint, Channel>();
+        public Dictionary<UInt32, DateTime> ChannelsExpire = new Dictionary<uint, DateTime>();
+        public void NewClient(TcpClient cli)
         {
-            if (!Messages.ContainsKey(target))
-            {
-                Messages.Add(target, new TcpMessageEncap(target));
-            }
-            byte[] FullMessage = new byte[message.Length + 8];
-            BitConverter.GetBytes(ChannelId).CopyTo(FullMessage, 0);
-            message.CopyTo(FullMessage, 8);
-            Messages[target].SendMessage(FullMessage);
+            client = cli;
+            ClientExpires = DateTime.Now + TcpConPool.ConnectionExpireTime;
+            Task.Factory.StartNew(ConnectionTask);
         }
-        public static void ReceiveMessageFromOtherSide(IPAddress from, byte[] message)
+        void ConnectionTask()
         {
-            ulong ChannelId = BitConverter.ToUInt64(message, 0);
-            if (!Channels.ContainsKey(ChannelId))
+            if (client.Available >= 4)
             {
-                Channels.Add(ChannelId, new Channel() { Id = ChannelId, target = from });
+                //message ahoy!
+                ClientExpires = DateTime.Now + TcpConPool.ConnectionExpireTime;
             }
-            byte[] Body = new byte[message.Length - 8];
-            Array.Copy(message, 8, Body, 0, Body.Length);
-            Channels[ChannelId].ReceiveFromOtherSideRaw(Body);
+            if (ClientExpires > DateTime.Now)
+            {
+                client.Close();
+                client = null;
+                return;
+            }
+            try
+            {
+                client.GetStream().Write(new byte[0], 0, 0);
+            }
+            catch
+            {
+                client.Close();
+                client = null;
+                return;
+            }
+            Task.Factory.StartNew(ConnectionTask);
         }
     }
     public class Channel
     {
-        public ulong Id;
-        public IPAddress target;
-        public void ReceiveFromOtherSideRaw(byte[] Message)
-        {
-            CDSMessage message = CDSMessage.FromStream(new MemoryStream(Message));
-        }
-    }
-    public struct CDSMessage
-    {
-        public UInt32 ChannelId;
-        public ChannelOperation ChannelOp;
 
-        public byte CDSOp;
-        public string TargetNode;
-        public UInt32 Seq;
-        public byte[] Message;
+    }
+    public enum MessageType : byte
+    {
+        read = 0,
+        write = 1,
+        create = 2,
+        delete = 3,
+        getType = 4,
+        getChildren = 5,
+        nodeExists = 6,
+        subscribe = 7,
+        unsubscribe = 8,
+        resetConnection = 9,
 
-        public MemoryStream ToStream()
-        {
-            MemoryStream s = new MemoryStream();
-            s.Write(BitConverter.GetBytes(ChannelId), 0, 4);
-            s.Write(BitConverter.GetBytes((byte)ChannelOp), 0, 1);
-            s.Write(BitConverter.GetBytes(CDSOp), 0, 1);
-            foreach (byte b in Encoding.ASCII.GetBytes(TargetNode)) s.WriteByte(b);
-            s.WriteByte(0);
-            s.Write(BitConverter.GetBytes(Seq), 0, 4);
-            s.Write(Message, 0, Message.Length);
-            return s;
-        }
-        public static CDSMessage FromStream(MemoryStream s)
-        {
-            CDSMessage m = new CDSMessage();
-            m.LoadStream(s);
-            return m;
-        }
-        void LoadStream(MemoryStream s)
-        {
-            s.Seek(0, SeekOrigin.Begin);
-            ChannelId = BitConverter.ToUInt32(s.ReadBytes(4), 0);
-            ChannelOp = (ChannelOperation)s.ReadByte();
-            CDSOp = (byte)s.ReadByte();
-            TargetNode = "";
-            int Last = s.ReadByte();
-            while (Last != 0)
-            {
-                TargetNode += (char)Last;
-                Last = s.ReadByte();
-            }
-            Seq = BitConverter.ToUInt32(s.ReadBytes(4), 0);
-            Message = s.ReadBytes((int)(s.Length - s.Position));
-        }
-    }
-    static class StreamUtils
-    {
-        public static byte[] ReadBytes(this MemoryStream s, int Len)
-        {
-            byte[] Ret = new byte[Len];
-            s.Read(Ret, 0, Len);
-            return Ret;
-        }
-    }
-    public enum ChannelOperation : byte
-    {
-        RemoteToLocal = 0,
-        LocalToRemote = 1,
+        subscriberUpdate = 253,
+        requestSuccessful = 254,
+        requestFailed = 255,
     }
 }
