@@ -11,7 +11,7 @@ namespace CDS.Common
 {
     public static class TcpConPool
     {
-        public static TimeSpan ConnectionExpireTime = new TimeSpan(0, 10, 0);
+        public static TimeSpan ConnectionExpireTime = new TimeSpan(0, 5, 0);
         public static Dictionary<IPAddress, Connection> Connections = new Dictionary<IPAddress, Connection>();
     }
     public class Connection
@@ -58,7 +58,7 @@ namespace CDS.Common
                         {
                             if (c.MessagesAwaiting.Keys.Contains(MessageID))
                             {
-                                c.MessagesAwaiting[MessageID].ReceiveResponse(s, Length - 1);
+                                c.MessagesAwaiting[MessageID].ReceiveResponse(s, Length - 1, type);
                                 break;
                             }
                         }
@@ -96,10 +96,14 @@ namespace CDS.Common
     public class Channel
     {
         public Dictionary<UInt64, Request> MessagesAwaiting = new Dictionary<UInt64, Request>();
+        public void ReceiveRequest(Stream request, UInt64 Length, MessageType type)
+        {
+
+        }
     }
     public class Request
     {
-        public void ReceiveResponse(Stream response, UInt64 Length)
+        public void ReceiveResponse(Stream response, UInt64 Length, MessageType type)
         {
 
         }
