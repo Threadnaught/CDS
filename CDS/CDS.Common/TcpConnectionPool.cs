@@ -19,8 +19,8 @@ namespace CDS.Common
         public IPAddress target;
         TcpClient client;
         public DateTime ClientExpires;
-        public Dictionary<UInt64, Channel> Channels = new Dictionary<UInt64, Channel>();
-        public Dictionary<UInt64, DateTime> ChannelsExpire = new Dictionary<UInt64, DateTime>();
+        public Dictionary<ulong, Channel> Channels = new Dictionary<ulong, Channel>();
+        public Dictionary<ulong, DateTime> ChannelsExpire = new Dictionary<ulong, DateTime>();
         public void NewClient(TcpClient cli)
         {
             lock (this)
@@ -48,12 +48,12 @@ namespace CDS.Common
                 if (client.Available >= 4)
                 {
                     //message ahoy!
-                    UInt64 Length = BitConverter.ToUInt64(s.ReadBytesFromStream(8), 0);
+                    ulong Length = BitConverter.Toulong(s.ReadBytesFromStream(8), 0);
                     MessageType type = (MessageType)s.ReadByte();
                     if ((byte)type > 127)
                     {
                         //response type
-                        UInt64 MessageID = BitConverter.ToUInt64(s.ReadBytesFromStream(8), 0);
+                        ulong MessageID = BitConverter.Toulong(s.ReadBytesFromStream(8), 0);
                         foreach (Channel c in Channels.Values)
                         {
                             if (c.MessagesAwaiting.Keys.Contains(MessageID))
@@ -95,15 +95,15 @@ namespace CDS.Common
     }
     public class Channel
     {
-        public Dictionary<UInt64, Request> MessagesAwaiting = new Dictionary<UInt64, Request>();
-        public void ReceiveRequest(Stream request, UInt64 Length, MessageType type)
+        public Dictionary<ulong, Request> MessagesAwaiting = new Dictionary<ulong, Request>();
+        public void ReceiveRequest(Stream request, ulong Length, MessageType type)
         {
 
         }
     }
     public class Request
     {
-        public void ReceiveResponse(Stream response, UInt64 Length, MessageType type)
+        public void ReceiveResponse(Stream response, ulong Length, MessageType type)
         {
 
         }
@@ -122,9 +122,9 @@ namespace CDS.Common
             Array.Copy(Guid.NewGuid().ToByteArray(), ret, len);
             return ret;
         }
-        public static UInt64 GenNoncollidingUint()
+        public static ulong GenNoncollidingUint()
         {
-            return BitConverter.ToUInt64(GenNoncollidingBits(8), 0);
+            return BitConverter.Toulong(GenNoncollidingBits(8), 0);
         }
     }
     public enum MessageType : byte
