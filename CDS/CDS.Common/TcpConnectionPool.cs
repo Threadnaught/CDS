@@ -48,12 +48,12 @@ namespace CDS.Common
                 if (client.Available >= 4)
                 {
                     //message ahoy!
-                    ulong Length = BitConverter.Toulong(s.ReadBytesFromStream(8), 0);
+                    ulong Length = BitConverter.ToUInt64(s.ReadBytesFromStream(8), 0);
                     MessageType type = (MessageType)s.ReadByte();
                     if ((byte)type > 127)
                     {
                         //response type
-                        ulong MessageID = BitConverter.Toulong(s.ReadBytesFromStream(8), 0);
+                        ulong MessageID = BitConverter.ToUInt64(s.ReadBytesFromStream(8), 0);
                         foreach (Channel c in Channels.Values)
                         {
                             if (c.MessagesAwaiting.Keys.Contains(MessageID))
@@ -115,16 +115,6 @@ namespace CDS.Common
             byte[] Ret = new byte[Len];
             s.Read(Ret, 0, Len);
             return Ret;
-        }
-        public static byte[] GenNoncollidingBits(int len)
-        {
-            byte[] ret = new byte[len];
-            Array.Copy(Guid.NewGuid().ToByteArray(), ret, len);
-            return ret;
-        }
-        public static ulong GenNoncollidingUint()
-        {
-            return BitConverter.Toulong(GenNoncollidingBits(8), 0);
         }
     }
     public enum MessageType : byte
