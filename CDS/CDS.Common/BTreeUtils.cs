@@ -8,9 +8,7 @@ using System.IO;
 using CSharpTest.Net.Collections;
 using CSharpTest.Net.Serialization;
 
-using CDS.Common;
-
-namespace CDS.Data
+namespace CDS.Common
 {
     public static class TableUtils
     {

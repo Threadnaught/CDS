@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.IO;
 
 using CDS.Common;
-using CDS.Data;
 
 class Program
 {
@@ -14,7 +13,7 @@ class Program
     {
         File.Delete("Nodes.dat");
         Server.Start();
-        LocalNode n = (LocalNode)LocalNode.Root.AddChild(NodeType.Stream, "TestNode");
+        Node n = (LocalNode)LocalNode.Root.AddChild(NodeType.Stream, "TestNode");
         n.WriteRaw(new CDSCode() { Code = @"
 function OnWrite(data){Log(data.Data.length)}
 function OnRead(){

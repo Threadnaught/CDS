@@ -16,11 +16,24 @@ namespace CDS.Common
     }
     public class Connection
     {
+        public bool OriginatedConnection;
+        public ulong Counter;
         public IPAddress target;
         TcpClient client;
         public DateTime ClientExpires;
         public Dictionary<ulong, Channel> Channels = new Dictionary<ulong, Channel>();
         public Dictionary<ulong, DateTime> ChannelsExpire = new Dictionary<ulong, DateTime>();
+        public Connection(bool OriginatedHere)
+        {
+            OriginatedConnection = OriginatedHere;
+        }
+        public ulong GenID()
+        {
+            ulong ret = Counter;
+            Counter++;
+            if (OriginatedConnection) ret += ulong.MaxValue / 2;
+            return ret;
+        }
         public void NewClient(TcpClient cli)
         {
             lock (this)
@@ -45,7 +58,7 @@ namespace CDS.Common
                 Stream s = client.GetStream();
                 if (client == null) return;
                 //checking if there is an incoming message:
-                if (client.Available >= 4)
+                if (client.Available >= 8)
                 {
                     //message ahoy!
                     ulong Length = BitConverter.ToUInt64(s.ReadBytesFromStream(8), 0);
@@ -131,6 +144,10 @@ namespace CDS.Common
             }
             r.Body = request.ReadBytesFromStream((int)Length - (26 + r.TargetNode.Length));
             return r;
+        }
+        public void Execute()
+        {
+
         }
     }
     public static class Utils

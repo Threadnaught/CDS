@@ -57,10 +57,6 @@
       <Project>{ecd56a00-c9fb-4400-9bd3-cc337132931a}</Project>
       <Name>CDS.Remote</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CDS.Server\CDS.Data.csproj">
-      <Project>{8c9a0a6b-fe2d-4a77-8155-f25c534dcee1}</Project>
-      <Name>CDS.Data</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
