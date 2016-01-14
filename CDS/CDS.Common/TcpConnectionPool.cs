@@ -98,14 +98,39 @@ namespace CDS.Common
         public Dictionary<ulong, Request> MessagesAwaiting = new Dictionary<ulong, Request>();
         public void ReceiveRequest(Stream request, ulong Length, MessageType type)
         {
-
+            
         }
     }
     public class Request
     {
+        public bool OriginatesLocally;
+
+        public MessageType type;
+
+        public ulong SenderID;
+        public ulong MessageID;
+        public string TargetNode;
+        public byte[] Body;
         public void ReceiveResponse(Stream response, ulong Length, MessageType type)
         {
 
+        }
+        public static Request ParseFromStream(Stream request, ulong Length, MessageType type)
+        {
+            Request r = new Request();
+            r.OriginatesLocally = false;
+            r.type = type;
+            r.SenderID = BitConverter.ToUInt64(request.ReadBytesFromStream(8), 0);
+            r.MessageID = BitConverter.ToUInt64(request.ReadBytesFromStream(8), 0);
+            r.TargetNode = "";
+            byte b = (byte)request.ReadByte();
+            while (b != 0)
+            {
+                r.TargetNode += (char)b;
+                b = (byte)request.ReadByte();
+            }
+            r.Body = request.ReadBytesFromStream((int)Length - (26 + r.TargetNode.Length));
+            return r;
         }
     }
     public static class Utils

@@ -8,7 +8,6 @@ using System.Security.Cryptography;
 
 namespace CDS.Common
 {
-    //desperatley needs auditing by somone who knows their shit
     static class NonCollingRNG
     {
         static Random rand;
