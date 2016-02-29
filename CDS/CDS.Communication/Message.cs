@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace CDS.Communication
 {
-    public abstract class ConnectionPool
+    public class Message
     {
-
     }
 }
