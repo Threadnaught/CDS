@@ -29,6 +29,22 @@ namespace CDS.Common
                 //remote stuff
             }
         }
+        public Node1 GetParent()
+        {
+            if (Local)
+            {
+                return new Node1() { Local = true, FullName = TableUtils.GetNodeData((uint)TableUtils.GetNodeData((uint)lookupID(FullName)).ParentID).Name };
+            }
+            else
+            {
+                //remote stuff
+            }
+        }
+        string FullNameFromId(uint id)
+        {
+            if ((uint)TableUtils.GetNodeData((uint)lookupID(FullName)).ParentID == 0) { return TableUtils.GetNodeData(id).Name; }
+            return FullNameFromId((uint)TableUtils.GetNodeData((uint)lookupID(FullName)).ParentID) + "." + TableUtils.GetNodeData((uint)lookupID(FullName)).Name;
+        }
         uint lookupID(string Name)
         {
             if (!Local) throw new Exception("wrong side, try the other one");
