@@ -26,7 +26,7 @@ namespace CDS.Communication
             }
         }
 
-        protected override bool Closed()
+        public override bool Closed()
         {
             if (Expired || !c.Connected) return true;
             try

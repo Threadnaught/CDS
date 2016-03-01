@@ -16,16 +16,17 @@ namespace CDS.Communication
         public static void MessageReceivedFromConnection(Stream s, ulong Length, Connection con)
         {
             //read message out of stream
-            Operation MessageType;
-            Guid SenderID;
-            Guid MessageID;
-            string TargetNode;
-            byte[] Body;
             try
             {
+                Operation MessageType;
+                Guid SenderID;
+                Guid MessageID;
+                string TargetNode;
+                byte[] Body;
                 MessageType = (Operation)s.ReadByte();
                 if ((byte)MessageType < 127)
                 {
+                    //request type (sender id, message id, target, body)
                     SenderID = new Guid(s.ReadFromStream(16));
                     MessageID = new Guid(s.ReadFromStream(16));
                     TargetNode = "";
@@ -40,17 +41,33 @@ namespace CDS.Communication
                 }
                 else
                 {
-
+                    //response type (message id, body)
+                    MessageID = new Guid(s.ReadFromStream(16));
+                    Client c = FindMessageClient(MessageID);
+                    SenderID = c.ID;
+                    Message m = c.OutgoingMessages.First(me => { return me.MessageID == MessageID; } );
+                    TargetNode = m.TargetNode;
+                    Body = s.ReadFromStream((int)Length - 17);
                 }
+                Message Constructed = new Message() { MessageID = MessageID, Op = MessageType, SenderID = SenderID, TargetNode = TargetNode };
+                FindClient(Constructed.SenderID).ReceivedMessageFromConnection(con);
+                //INSERT SEND TO DATA THING
             }
             catch
             {
-                return;
+                con.Closed();
             }
         }
         public static Client FindClient(Guid g)
         {
             foreach (Client c in Clients) if (c.ID == g) return c;
+            return null;
+        }
+        public static Client FindMessageClient(Guid message)
+        {
+            foreach (Client c in Clients)
+                foreach (Message m in c.OutgoingMessages)
+                    if (m.MessageID == message) return c;
             return null;
         }
         public static byte[] ReadFromStream(this Stream s, int len)

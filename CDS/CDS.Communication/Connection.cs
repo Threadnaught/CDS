@@ -24,10 +24,11 @@ namespace CDS.Communication
             if (Expires > DateTime.Now || Closed()) { Expired = true; return; }
             Task.Factory.StartNew(Check);
         }
+        
 
         protected abstract Stream GetStream();
 
-        protected abstract bool Closed();
+        public abstract bool Closed();
         protected abstract bool MessageIncoming();
         protected abstract ulong MessageLength();
     }

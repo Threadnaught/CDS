@@ -10,6 +10,8 @@ namespace CDS.Communication
     {
         public Operation Op;
         public Guid SenderID;
+        public Guid MessageID;
+        public string TargetNode;
     }
 
     public enum Operation : byte
