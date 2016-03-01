@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace CDS.Communication
 {
@@ -11,5 +12,22 @@ namespace CDS.Communication
         //REPRESENTS A SINGLE PATH TO A SINGLE MACHINE
         public abstract void SendMessage(byte[] Message);
         public DateTime Expires;
+        public bool Expired;
+        
+        public void Check()
+        {
+            if (MessageIncoming())
+            {
+                MasterConnectionPool.MessageReceivedFromConnection(GetStream(), MessageLength(), this);
+                Expires = DateTime.Now + MasterConnectionPool.ExpiryTime;
+            }
+            if (Expires > DateTime.Now) { Expired = true; return; }
+            Task.Factory.StartNew(Check);
+        }
+
+        protected abstract Stream GetStream();
+
+        protected abstract bool MessageIncoming();
+        protected abstract ulong MessageLength();
     }
 }

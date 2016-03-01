@@ -12,7 +12,6 @@ namespace CDS.Communication
         public Guid SenderID;
     }
 
-
     public enum Operation : byte
     {
         read = 0, //send emtpy, response data
