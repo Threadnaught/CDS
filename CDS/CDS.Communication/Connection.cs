@@ -21,12 +21,13 @@ namespace CDS.Communication
                 MasterConnectionPool.MessageReceivedFromConnection(GetStream(), MessageLength(), this);
                 Expires = DateTime.Now + MasterConnectionPool.ExpiryTime;
             }
-            if (Expires > DateTime.Now) { Expired = true; return; }
+            if (Expires > DateTime.Now || Closed()) { Expired = true; return; }
             Task.Factory.StartNew(Check);
         }
 
         protected abstract Stream GetStream();
 
+        protected abstract bool Closed();
         protected abstract bool MessageIncoming();
         protected abstract ulong MessageLength();
     }

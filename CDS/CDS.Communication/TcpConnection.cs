@@ -17,6 +17,20 @@ namespace CDS.Communication
 
         }
 
+        protected override bool Closed()
+        {
+            if (Expired) return true;
+            try
+            {
+                c.GetStream().Write(new byte[0], 0, 0);
+            }
+            catch
+            {
+                return true;
+            }
+            return false;
+        }
+
         protected override Stream GetStream()
         {
             return c.GetStream();
@@ -24,13 +38,31 @@ namespace CDS.Communication
 
         protected override bool MessageIncoming()
         {
-            return c.GetStream().DataAvailable;
+            //is a message incoming
+            try
+            {
+                return c.GetStream().DataAvailable;
+            }
+            catch
+            {
+                Closed();
+                return false;
+            }
         }
 
         protected override ulong MessageLength()
         {
-            byte[] Length = new byte[8];
-            return BitConverter.ToUInt64(Length, 0);
+            //length of incoming message
+            try
+            {
+                byte[] Length = new byte[8];
+                return BitConverter.ToUInt64(Length, 0);
+            }
+            catch
+            {
+                Closed();
+                return 0;
+            }
         }
     }
 }
