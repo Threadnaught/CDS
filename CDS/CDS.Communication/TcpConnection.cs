@@ -14,12 +14,21 @@ namespace CDS.Communication
         TcpClient c = new TcpClient();
         public override void SendMessage(byte[] Message)
         {
-
+            try
+            {
+                byte[] Len = BitConverter.GetBytes((ulong)Message.Length);
+                c.GetStream().Write(Len, 0, 8);
+                c.GetStream().Write(Message, 0, Message.Length);
+            }
+            catch
+            {
+                Closed();
+            }
         }
 
         protected override bool Closed()
         {
-            if (Expired) return true;
+            if (Expired || !c.Connected) return true;
             try
             {
                 c.GetStream().Write(new byte[0], 0, 0);
@@ -56,6 +65,7 @@ namespace CDS.Communication
             try
             {
                 byte[] Length = new byte[8];
+                c.GetStream().Read(Length, 0, 8);
                 return BitConverter.ToUInt64(Length, 0);
             }
             catch
