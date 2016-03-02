@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 
 namespace CDS.Communication
 {
-    public class Message
+    public class Request
     {
         public Operation Op;
         public Guid SenderID;
         public Guid MessageID;
         public string TargetNode;
+        public byte[] Body;
     }
-
+    public class Response
+    {
+        public Guid MessageID;
+        public byte[] Body;
+    }
     public enum Operation : byte
     {
         read = 0, //send emtpy, response data
