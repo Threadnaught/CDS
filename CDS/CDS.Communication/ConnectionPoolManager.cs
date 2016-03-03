@@ -11,65 +11,50 @@ namespace CDS.Communication
     {
         //MANAGES ALL CONNECTIONS AND INTERFACES TO REST OF PROGRAM
         public static List<Connection> Connections = new List<Connection>();
-        public static List<Client> Clients = new List<Client>();
+        public static List<Requester> Requesters = new List<Requester>();
+        public static List<Responder> Responders = new List<Responder>();
         public static TimeSpan ExpiryTime = new TimeSpan(0, 10, 0);
         public static void MessageReceivedFromConnection(Stream s, ulong Length, Connection con)
         {
-            //read message out of stream
-            try
+            int op = s.ReadByte();
+            if (op < 127)
             {
-                Operation MessageType;
-                Guid SenderID;
-                Guid MessageID;
-                string TargetNode;
-                byte[] Body;
-                MessageType = (Operation)s.ReadByte();
-                if ((byte)MessageType < 127)
-                {
-                    //request type (sender id, message id, target, body)
-                    SenderID = new Guid(s.ReadFromStream(16));
-                    MessageID = new Guid(s.ReadFromStream(16));
-                    TargetNode = "";
-                    int c;
-                    while (true)
-                    {
-                        c = s.ReadByte();
-                        if (c == 0) break;
-                        TargetNode += (char)c;
-                    }
-                    Body = s.ReadFromStream((int)Length - (34 + TargetNode.Length));
-                }
-                else
-                {
-                    //response type (message id, body)
-                    MessageID = new Guid(s.ReadFromStream(16));
-                    Client c = FindMessageClient(MessageID);
-                    SenderID = c.ID;
-                    //Message m = c.OutgoingMessages.First(me => { return me.MessageID == MessageID; } );
-                    TargetNode = m.TargetNode;
-                    Body = s.ReadFromStream((int)Length - 17);
-                }
-                //Message Constructed = new Message() { MessageID = MessageID, Op = MessageType, SenderID = SenderID, TargetNode = TargetNode };
-                //FindClient(Constructed.SenderID).ReceivedMessageFromConnection(con, Constructed);
+                //request, direct to responder
+                RequestReceivedFromConnection(s, Length - 1, con, (Operation)op);
             }
-            catch
+            else
             {
-                con.Closed();
+                //response, direct to requester
+                ResponseReceivedFromConnection(s, Length - 1, con, (Operation)op);
             }
         }
-        public static Client FindClient(Guid g)
+        public static void RequestReceivedFromConnection(Stream s, ulong Length, Connection con, Operation op)
         {
-            //find client by guid
-            foreach (Client c in Clients) if (c.ID == g) return c;
-            return null;
+            Request r = new Request();
+            //build request from stream
+            r.Op = op;
+            r.SenderID = new Guid(s.ReadFromStream(16));
+            r.MessageID = new Guid(s.ReadFromStream(16));
+            r.TargetNode = "";
+            while (true)
+            {
+                int c = s.ReadByte();
+                if (c == 0) break;
+                r.TargetNode += (char)c;
+            }
+            r.Body = s.ReadFromStream((int)Length - (r.TargetNode.Length + 32));
+            foreach (Responder re in Responders) if (re.RequesterID == r.SenderID)
+                {
+                    re.ReceiveRequest(r, con);
+                    return;
+                }
         }
-        public static Client FindMessageClient(Guid message)
+        public static void ResponseReceivedFromConnection(Stream s, ulong Length, Connection con, Operation op)
         {
-            //find client by guid of message
-            //foreach (Client c in Clients)
-                //foreach (Message m in c.OutgoingMessages)
-                  //  if (m.MessageID == message) return c;
-            return null;
+            Response r = new Response();
+            r.MessageID = new Guid(s.ReadFromStream(16));
+            r.Body = s.ReadFromStream((int)Length - 16);
+            foreach (Requester re in Requesters) if (re.HasRequest(r.MessageID)) re.ReceiveResponse(r);
         }
         public static byte[] ReadFromStream(this Stream s, int len)
         {
