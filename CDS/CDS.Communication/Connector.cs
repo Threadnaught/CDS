@@ -9,7 +9,7 @@ namespace CDS.Communication
     public abstract class Connector
     {
         //manages connecting to and connections from other machines
-        public abstract void CanCreate(string ConnectionCode);
+        public abstract bool CanCreate(string ConnectionCode);
         public abstract Connection Create(string ConnectionCode);
         
     }

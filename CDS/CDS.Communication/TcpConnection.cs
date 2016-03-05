@@ -12,6 +12,12 @@ namespace CDS.Communication
     public class TcpConnection : Connection
     {
         TcpClient c = new TcpClient();
+        public const int Port = 12345;
+        public TcpConnection(IPAddress target)
+        {
+            c = new TcpClient();
+            c.Connect(target, Port);
+        }
         public override void SendMessage(byte[] Message)
         {
             try
@@ -25,7 +31,6 @@ namespace CDS.Communication
                 Closed();
             }
         }
-
         public override bool Closed()
         {
             if (Expired || !c.Connected) return true;
@@ -39,12 +44,10 @@ namespace CDS.Communication
             }
             return false;
         }
-
         protected override Stream GetStream()
         {
             return c.GetStream();
         }
-
         protected override bool MessageIncoming()
         {
             //is a message incoming
@@ -58,7 +61,6 @@ namespace CDS.Communication
                 return false;
             }
         }
-
         protected override ulong MessageLength()
         {
             //length of incoming message
