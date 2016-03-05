@@ -56,6 +56,10 @@ namespace CDS.Communication
             r.Body = s.ReadFromStream((int)Length - 16);
             foreach (Requester re in Requesters) if (re.HasRequest(r.MessageID)) re.ReceiveResponse(r);
         }
+        public static void NewConnection(Connection c)
+        {
+            Connections.Add(c);
+        }
         public static byte[] ReadFromStream(this Stream s, int len)
         {
             //util to read len bytes from stream s

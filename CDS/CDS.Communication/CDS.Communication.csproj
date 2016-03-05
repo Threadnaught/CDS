@@ -42,7 +42,8 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="Connection.cs" />
-    <Compile Include="ConnectionPoolManager.cs" />
+    <Compile Include="MasterConnectionPool.cs" />
+    <Compile Include="Connector.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TcpConnection.cs" />
