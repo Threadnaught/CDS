@@ -14,6 +14,7 @@ namespace CDS.Communication
         public static List<Requester> Requesters = new List<Requester>();
         public static List<Responder> Responders = new List<Responder>();
         public static TimeSpan ExpiryTime = new TimeSpan(0, 10, 0);
+
         public static void MessageReceivedFromConnection(Stream s, ulong Length, Connection con)
         {
             int op = s.ReadByte();
@@ -60,5 +61,9 @@ namespace CDS.Communication
         {
             Connections.Add(c);
         }
+
+        public static void RemoveConnection(Connection c) { Connections.Remove(c); }
+        public static void RemoveRequester(Requester r) { Requesters.Remove(r); }
+        public static void RemoveResponders(Responder r) { Responders.Remove(r); }
     }
 }

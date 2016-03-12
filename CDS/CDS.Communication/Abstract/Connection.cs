@@ -25,7 +25,7 @@ namespace CDS.Communication
                 MasterConnectionPool.MessageReceivedFromConnection(GetStream(), MessageLength(), this);
                 Expires = DateTime.Now + MasterConnectionPool.ExpiryTime;
             }
-            if (Expires > DateTime.Now || Closed()) { Expired = true; return; }
+            if (Expires > DateTime.Now || Closed()) { Expired = true; MasterConnectionPool.RemoveConnection(this); return; }
             Task.Factory.StartNew(Check);
         }
     }

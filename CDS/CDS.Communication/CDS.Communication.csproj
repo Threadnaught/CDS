@@ -45,8 +45,10 @@
     <Compile Include="Clients\Requester.cs" />
     <Compile Include="MasterConnectionPool.cs" />
     <Compile Include="Abstract\Connector.cs" />
-    <Compile Include="Message.cs" />
+    <Compile Include="Messages\Operation.cs" />
+    <Compile Include="Messages\Response.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Messages\Request.cs" />
     <Compile Include="TCP\TcpConnection.cs" />
     <Compile Include="TCP\TcpConnector.cs" />
     <Compile Include="Utils.cs" />

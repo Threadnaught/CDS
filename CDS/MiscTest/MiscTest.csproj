@@ -49,13 +49,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CDS.Common\CDS.Common.csproj">
-      <Project>{16e7c81f-d9d8-4dd4-9445-37b2c5f540ff}</Project>
-      <Name>CDS.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CDS.Remote\CDS.Remote.csproj">
-      <Project>{ecd56a00-c9fb-4400-9bd3-cc337132931a}</Project>
-      <Name>CDS.Remote</Name>
+    <ProjectReference Include="..\CDS.Communication\CDS.Communication.csproj">
+      <Project>{cd96ab52-eec1-4771-a80d-bf9105eec7d0}</Project>
+      <Name>CDS.Communication</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
