@@ -40,14 +40,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client.cs" />
-    <Compile Include="Connection.cs" />
+    <Compile Include="Clients\Responder.cs" />
+    <Compile Include="Abstract\Connection.cs" />
+    <Compile Include="Clients\Requester.cs" />
     <Compile Include="MasterConnectionPool.cs" />
-    <Compile Include="Connector.cs" />
+    <Compile Include="Abstract\Connector.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TcpConnection.cs" />
-    <Compile Include="TcpConnector.cs" />
+    <Compile Include="TCP\TcpConnection.cs" />
+    <Compile Include="TCP\TcpConnector.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

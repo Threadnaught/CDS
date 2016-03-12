@@ -13,7 +13,11 @@ namespace CDS.Communication
         public abstract void SendMessage(byte[] Message);
         public DateTime Expires;
         public bool Expired;
-        
+        protected abstract Stream GetStream();
+        public abstract bool Closed();
+        protected abstract bool MessageIncoming();
+        protected abstract ulong MessageLength();
+
         public void Check()
         {
             if (MessageIncoming())
@@ -24,9 +28,5 @@ namespace CDS.Communication
             if (Expires > DateTime.Now || Closed()) { Expired = true; return; }
             Task.Factory.StartNew(Check);
         }
-        protected abstract Stream GetStream();
-        public abstract bool Closed();
-        protected abstract bool MessageIncoming();
-        protected abstract ulong MessageLength();
     }
 }

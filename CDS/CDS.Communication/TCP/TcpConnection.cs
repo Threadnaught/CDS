@@ -11,12 +11,16 @@ namespace CDS.Communication
 {
     public class TcpConnection : Connection
     {
-        TcpClient c = new TcpClient();
+        TcpClient c;
         public const int Port = 12345;
         public TcpConnection(IPAddress target)
         {
             c = new TcpClient();
             c.Connect(target, Port);
+        }
+        public TcpConnection(TcpClient cli)
+        {
+            c = cli;
         }
         public override void SendMessage(byte[] Message)
         {

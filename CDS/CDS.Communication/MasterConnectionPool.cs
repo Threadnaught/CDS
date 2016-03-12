@@ -60,12 +60,5 @@ namespace CDS.Communication
         {
             Connections.Add(c);
         }
-        public static byte[] ReadFromStream(this Stream s, int len)
-        {
-            //util to read len bytes from stream s
-            byte[] ret = new byte[len];
-            s.Read(ret, 0, len);
-            return ret;
-        }
     }
 }
